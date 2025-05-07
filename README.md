@@ -51,8 +51,7 @@ CustomerAI_Project/
 │   └── long_term.py       # Long-term memory implementation
 └── scripts/                # Utility scripts
     ├── init_data.py       # Initialize sample data
-    ├── run_app.py         # Run the application
-    └── secure_subprocess.py # Secure subprocess wrapper
+    └── run_app.py         # Run the application
 ```
 
 ## Core Modules
@@ -76,25 +75,24 @@ CustomerAI_Project/
 ### Prerequisites
 
 - Python 3.10
-- Required Python packages (see requirements.txt)
+- Required Python packages (see requirements-roadmap.txt)
 
 ### Installation
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/VIKAS9793/CustomerAI_Project.git
-cd CustomerAI_Project
+git clone https://github.com/VIKAS9793/Customer_analysis_AIproject.git
+cd Customer_analysis_AIproject
 ```
 
 2. Install dependencies:
 ```bash
-pip install -r requirements.txt
+pip install -r requirements-roadmap.txt
 ```
 
 3. Configure environment variables:
 ```bash
-cp .env.example .env
-# Edit .env with your configuration
+# Create a .env file with your configuration
 ```
 
 4. Run the application:
