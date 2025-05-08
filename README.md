@@ -69,6 +69,42 @@ CustomerAI seamlessly integrates with such collaborations, enhancing fraud detec
 - **Logging & Monitoring**: Custom logging system that records fraud/kyc events and integrates with **Prometheus** for monitoring.
 - **Security**: End-to-end encryption with **AES-256**, role-based access control (RBAC), and secure APIs for model access.
 
+## 🛡️ AI Governance, Ethics, Risk & Compliance (GRC)
+
+Our project is designed with a strong commitment to responsible AI practices, aligning with global AI governance standards such as RBI/SEBI guidelines (India), EU AI Act, and emerging best practices from ISO 42001 (AI Management Systems).
+
+### ✅ Ethical AI Principles
+
+- **Fairness**: Actively detects and mitigates demographic or geographic biases in decision-making.
+- **Transparency**: All AI decisions are accompanied by explainability outputs, including confidence scores, rationale, and verification steps.
+- **Accountability**: Human-in-the-loop mechanisms ensure final decisions on flagged risks are reviewed by authorized personnel.
+- **Privacy First**: All sensitive customer data is encrypted and anonymized. We adhere to global data protection regulations (GDPR, DPDP Act India).
+
+### 🔍 Risk Controls & Monitoring
+
+- **Real-time Monitoring**: Latency, error rates, and model confidence are continuously tracked. Alerts are triggered if thresholds are breached.
+- **Audit Logging**: All transactions, fraud decisions, and KYC checks are logged with immutable records for traceability.
+- **Threshold-based Overrides**: Risk and confidence thresholds trigger manual review or model fallback.
+- **Model Testing**: Real-world test cases are implemented in `tests/test_fraud_detection.py` and `tests/test_security.py`.
+
+### 🔄 Model Lifecycle & Feedback Loop
+
+- **Performance Checks**: Models are reviewed quarterly and retrained based on real-world feedback and drift detection.
+- **Bias Audits**: Bias is evaluated monthly using test data across diverse demographics and geographies.
+- **Version Control**: Only enterprise-grade LLMs like Claude 3.7 Sonnet are used with official API providers.
+- **Fallback Architecture**: All tasks have primary and backup models with consistent behavior enforced by configuration (`config.yaml`).
+
+### 📜 Compliance Standards
+
+| Standard / Regulation      | Alignment |
+|---------------------------|-----------|
+| RBI AI Framework (India)  | ✅         |
+| DPDP Act 2023 (India)     | ✅         |
+| GDPR (EU)                 | ✅         |
+| EU AI Act (2024 Draft)    | ✅         |
+| ISO/IEC 42001:2023        | ✅         |
+| SOC 2 Type II Readiness   | ✅         |
+
 ---
 
 ## Conclusion
