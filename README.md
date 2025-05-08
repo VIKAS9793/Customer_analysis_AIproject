@@ -11,47 +11,33 @@ CustomerAI is a framework that ensures compliance with data privacy regulations 
 ```
 CustomerAI_Project/
 ├── actions/                # Action executors for performing operations
-│   ├── base.py            # Base action executor interface
-│   ├── email.py           # Email action executor
-│   ├── factory.py         # Factory for action executors
-│   ├── webhook.py         # Webhook action executor
-│   └── zendesk.py         # Zendesk action executor
+│   └── notify_compliance.py
 ├── agents/                 # Agent implementations
-│   ├── action_agent.py    # Agent for executing actions
-│   ├── base.py            # Base agent interface
-│   ├── chat_agent.py      # Agent for chat interactions
-│   └── insight_agent.py   # Agent for generating insights
-├── configs/                # Configuration files
-│   ├── default.yaml       # Default configuration
-│   └── providers.yaml     # Model provider configuration
+│   ├── audit_agent.py     # Audit and compliance agent
+│   ├── fraud_agent.py     # Fraud detection agent
+│   ├── kyc_agent.py       # KYC verification agent
+│   └── monitoring_agent.py # Monitoring and alerting agent
 ├── core/                   # Core modules
-│   ├── agent_manager.py   # Manages and routes tasks to agents
-│   ├── auth.py            # Authentication and authorization
-│   ├── bias.py            # Bias detection and mitigation
-│   ├── cache.py           # Caching functionality
-│   ├── config_manager.py  # Configuration management
-│   ├── env.py             # Environment management
-│   ├── error_handler.py   # Error handling
-│   ├── logging.py         # Logging configuration
 │   ├── metrics.py         # Metrics collection and reporting
-│   ├── model_provider.py  # Model provider interfaces
-│   ├── privacy.py         # Privacy management
-│   ├── safety.py          # Anti-hallucination guard
-│   └── validation.py      # Validation functionality
-├── interfaces/             # User interfaces
-│   ├── api.py             # FastAPI server
-│   └── streamlit_ui.py    # Streamlit UI
-├── knowledge/              # Knowledge base implementations
-│   ├── base.py            # Base knowledge interface
-│   ├── factory.py         # Factory for knowledge bases
-│   └── vector_store.py    # Vector store knowledge base
-├── memory/                 # Memory implementations
-│   ├── base.py            # Base memory interface
-│   ├── factory.py         # Factory for memory implementations
-│   └── long_term.py       # Long-term memory implementation
-└── scripts/                # Utility scripts
-    ├── init_data.py       # Initialize sample data
-    └── run_app.py         # Run the application
+│   └── model_provider.py  # Model provider interfaces
+├── dashboard/              # Monitoring dashboard
+│   └── app.py             # Streamlit dashboard
+├── feedback/               # Feedback management
+│   └── feedback_logger.py # Feedback logging
+├── memory/                 # Memory management
+│   └── db_manager.py      # Database management
+├── pipelines/              # Data processing pipelines
+│   └── process_docs.py    # Document processing
+├── tests/                  # Test cases
+│   ├── test_compliance.py # Compliance tests
+│   ├── test_fraud_detection.py # Fraud detection tests
+│   ├── test_kyc_verification.py # KYC tests
+│   └── test_security.py   # Security tests
+├── utils/                  # Utility modules
+│   ├── audit_logger.py    # Audit logging
+│   ├── data_generator.py  # Test data generation
+│   └── validators.py      # Input validation
+└── main.py                # Main application entry point
 ```
 
 ## Core Modules
