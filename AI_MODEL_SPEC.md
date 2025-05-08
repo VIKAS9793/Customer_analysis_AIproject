@@ -3,8 +3,8 @@
 ## Model Configuration
 
 ### Fraud Detection
-- Primary Model: OpenAI gpt-4.5
-- Backup Model: Anthropic claude-3.7-sonnet
+- Primary Model: Anthropic claude-3.7-sonnet
+- Backup Model: OpenAI gpt-4.5
 - Temperature: 0.2
 - Max tokens: 1,000,000
 - Risk threshold: 0.7
@@ -14,8 +14,8 @@
 - Explainability: Required
 
 ### KYC Verification
-- Primary Model: OpenAI gpt-4.5
-- Backup Model: Anthropic claude-3.7-sonnet
+- Primary Model: Anthropic claude-3.7-sonnet
+- Backup Model: OpenAI gpt-4.5
 - Temperature: 0.3
 - Max tokens: 1,000,000
 - Confidence threshold: 0.92
