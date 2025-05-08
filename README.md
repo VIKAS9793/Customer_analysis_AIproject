@@ -107,6 +107,12 @@ Our project is designed with a strong commitment to responsible AI practices, al
 
 ---
 
+## Important Notice
+
+⚠️ **Important**: Please review our [DISCLAIMER](DISCLAIMER.md) for important information about the framework's status, limitations, and usage requirements.
+
+---
+
 ## Conclusion
 
 CustomerAI offers a robust, AI-driven solution tailored for the modern challenges of fraud detection and KYC automation in the fintech sector. By staying ahead of industry trends and integrating powerful AI models, CustomerAI positions itself as an innovative and secure platform to help financial institutions protect against fraud.
