@@ -37,7 +37,7 @@ CustomerAI seamlessly integrates with such collaborations, enhancing fraud detec
 
 ### Key Features
 
-- **AI-Driven Fraud Detection**: Utilizing the latest AI models, including **Claude 3.7**, **GPT-4o**, and **Llama 3-70b**, CustomerAI can accurately detect fraudulent activities and minimize false positives.
+- **AI-Driven Fraud Detection**: Utilizing **Claude 3.7-sonnet** by Anthropic, CustomerAI can accurately detect fraudulent activities and minimize false positives.
 - **Ethical AI**: Emphasizing responsible AI practices like bias detection and human-in-the-loop decision-making ensures fairness and transparency.
 - **Real-World Test Cases**: The system includes numerous real-world test cases such as **geo_anomaly_fraud_flag**, **deepfake_voice_scam**, and **insider_trading_alert** to ensure robust, reliable performance.
 - **Data Privacy & Security**: Implements data encryption, audit logging, and transaction masking to ensure financial data protection at every step.
@@ -55,7 +55,7 @@ CustomerAI seamlessly integrates with such collaborations, enhancing fraud detec
 | **Scalability & Security**      | ✅              | ✅                       | ✅                           | ✅             | ✅        |
 
 ### CustomerAI’s Competitive Advantages:
-- **AI Models**: By using enterprise-grade models like **Claude 3.7**, **GPT-4o**, and **Llama 3-70b**, CustomerAI incorporates cutting-edge AI technologies for real-time fraud detection and KYC automation.
+- **AI Models**: By using **Claude 3.7-sonnet** by Anthropic, CustomerAI incorporates cutting-edge AI technologies for real-time fraud detection and KYC automation.
 - **Ethical AI**: The project focuses on ethical AI with human-in-the-loop decision-making, allowing for manual intervention when the system flags high-risk transactions.
 - **Real-World Test Cases**: With test cases like **deepfake detection** and **insider trading alerts**, CustomerAI provides comprehensive fraud detection that tackles both current and emerging threats.
 
