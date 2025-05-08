@@ -1,0 +1,25 @@
+openai==1.30.0  # Enterprise version
+langchain==0.2.0  # Enterprise version
+streamlit==1.35.0  # Enterprise version
+spacy==3.8.0  # Latest stable
+pandas==2.2.3  # Latest stable
+numpy==1.26.5  # Latest stable
+anthropic==0.9.0  # Enterprise version
+google-gemini==2.5  # Enterprise version
+llama-cpp-python==0.2.5  # Enterprise version
+python-dotenv==1.0.0  # For secure environment variables
+pydantic==2.5.3  # For data validation
+fastapi==0.109.0  # For API endpoints
+uvicorn==0.27.0  # For API server
+sqlalchemy==2.0.25  # For database
+python-jose==3.3.0  # For JWT
+passlib==1.7.4  # For password hashing
+bcrypt==4.0.1  # For password hashing
+python-dotenv==1.0.0
+pydantic==2.5.3
+fastapi==0.109.0
+uvicorn==0.27.0
+sqlalchemy==2.0.25
+python-jose==3.3.0
+passlib==1.7.4
+python-multipart==0.0.6

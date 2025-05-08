@@ -269,7 +269,7 @@ class AnthropicProvider(ModelProvider):
         """
         self.config = config
         self.api_key = os.environ.get(config.get("api_key_env", "ANTHROPIC_API_KEY"), "")
-        self.model = config.get("model", "claude-3-opus-20240229")
+        self.model = config.get("model", "claude-3.7-sonnet")
         self.max_tokens = config.get("max_tokens", 1000)
         self.temperature = config.get("temperature", 0.2)
 

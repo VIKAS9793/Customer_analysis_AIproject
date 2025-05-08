@@ -1,0 +1,58 @@
+import matplotlib.pyplot as plt
+import networkx as nx
+
+# Create a directed graph
+G = nx.DiGraph()
+
+# Add nodes
+nodes = {
+    'Customer': {'pos': (0, 0)},
+    'Frontend': {'pos': (1, 0)},
+    'Fraud Detection': {'pos': (2, 1)},
+    'KYC Verification': {'pos': (2, -1)},
+    'Security Monitoring': {'pos': (3, 1)},
+    'Compliance Module': {'pos': (3, -1)},
+    'Audit Log': {'pos': (4, 0)},
+    'Human Review': {'pos': (5, 0)},
+    'Data Storage': {'pos': (6, 0)}
+}
+
+# Add nodes to graph
+for node, attr in nodes.items():
+    G.add_node(node, pos=attr['pos'])
+
+# Add edges
+edges = [
+    ('Customer', 'Frontend'),
+    ('Frontend', 'Fraud Detection'),
+    ('Frontend', 'KYC Verification'),
+    ('Fraud Detection', 'Security Monitoring'),
+    ('Fraud Detection', 'Compliance Module'),
+    ('KYC Verification', 'Security Monitoring'),
+    ('KYC Verification', 'Compliance Module'),
+    ('Security Monitoring', 'Audit Log'),
+    ('Compliance Module', 'Audit Log'),
+    ('Audit Log', 'Human Review'),
+    ('Human Review', 'Data Storage')
+]
+
+G.add_edges_from(edges)
+
+# Draw the graph
+plt.figure(figsize=(12, 8))
+
+# Draw nodes
+pos = nx.get_node_attributes(G, 'pos')
+nx.draw_networkx_nodes(G, pos, node_size=2000, node_color='lightblue')
+
+# Draw edges
+nx.draw_networkx_edges(G, pos, width=2, arrows=True, connectionstyle='arc3,rad=0.1')
+
+# Draw labels
+nx.draw_networkx_labels(G, pos, font_size=12, font_weight='bold')
+
+# Add titles and labels
+plt.title('CustomerAI Architecture', fontsize=16)
+plt.axis('off')
+plt.savefig('architecture_diagram.png', bbox_inches='tight', dpi=300)
+plt.close()

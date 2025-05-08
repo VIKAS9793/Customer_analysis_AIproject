@@ -41,13 +41,28 @@ class MetricsManager:
 
     def _initialize_metrics(self) -> None:
         """Initialize metrics counters and gauges."""
-        # Request metrics
+        # Initialize counters and gauges
         self.metrics_storage["request_count"] = 0
         self.metrics_storage["request_success_count"] = 0
         self.metrics_storage["request_error_count"] = 0
         self.metrics_storage["request_latency"] = []
 
-        # Task metrics
+        # Initialize decision metrics
+        self.metrics_storage["total_decisions"] = 0
+        self.metrics_storage["false_positives"] = 0
+        self.metrics_storage["false_negatives"] = 0
+        self.metrics_storage["true_positives"] = 0
+        self.metrics_storage["true_negatives"] = 0
+
+        # Initialize thresholds
+        self.false_positive_threshold = config.get("alert_thresholds", {}).get("false_positive_rate", 0.05)
+        self.false_negative_threshold = config.get("alert_thresholds", {}).get("false_negative_rate", 0.02)
+
+        # Initialize last alert times
+        self.last_false_positive_alert = 0
+        self.last_false_negative_alert = 0
+
+        # Request metrics
         self.metrics_storage["task_count"] = 0
         self.metrics_storage["task_success_count"] = 0
         self.metrics_storage["task_error_count"] = 0
