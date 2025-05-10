@@ -1,0 +1,18 @@
+{
+  "data_source": {
+    "type": "postgresql",
+    "host": "REPLACE_WITH_DB_HOST",
+    "port": 5432,
+    "database": "REPLACE_WITH_DB_NAME",
+    "user": "REPLACE_WITH_DB_USER",
+    "password": "REPLACE_WITH_DB_PASSWORD"
+  },
+  "model_config": {
+    "model_type": "random_forest",
+    "model_path": "REPLACE_WITH_MODEL_PATH"
+  },
+  "logging": {
+    "level": "INFO",
+    "file": "REPLACE_WITH_LOG_PATH"
+  }
+}
