@@ -1,5 +1,15 @@
 # CustomerAI Project Overview
 
+## Demo Available
+
+**A demonstration version of this project is available in the `/demo` directory.** This demo showcases the key features of the Customer Analysis AI system with a special focus on Indian market requirements. The demo is intended for stakeholder presentations and feature demonstrations only.
+
+**Demo Documentation:**
+- [Demo Overview](demo/README.md) - Quick start guide and feature summary
+- [Detailed Documentation](demo/DEMO_DOCUMENTATION.md) - Comprehensive documentation
+- [Changes Log](demo/CHANGES_LOG.md) - Recent enhancements and fixes
+- [Disclaimer](demo/DISCLAIMER.md) - Important limitations and disclaimers
+
 ⚠️ **IMPORTANT DISCLAIMER** ⚠️
 
 This project is provided as a foundation for business adaptation. Businesses MUST customize the following components according to their organization's requirements:
