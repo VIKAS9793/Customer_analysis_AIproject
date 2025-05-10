@@ -1,8 +1,5 @@
 # 🧠 AI Customer Analysis – Foundation Template for Businesses
 
-![GitHub repo size](https://github/repo-size/VIKAS9793/Customer_analysis_AIproject)
-![License](https://github/license/VIKAS9793/Customer_analysis_AIproject)
-
 > 🚀 A plug-and-play AI-powered customer analysis system built to serve as a **customizable base for businesses**, with modular components and no hardcoded secrets or APIs.
 
 ---
