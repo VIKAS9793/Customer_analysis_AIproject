@@ -144,3 +144,11 @@ tests/real_world_tests/
 docs/sources.json
 architecture_diagram.png
 audit.log
+.pytest_cache/
+htmlcov/
+*.egg-info/
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
