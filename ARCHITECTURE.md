@@ -17,38 +17,40 @@
   - Review management
 
 ### Core Services
-- Safety Manager
-  - Hallucination prevention
-  - Bias detection
+- Security Manager
+  - Input validation
   - PII protection
-- Metrics Manager
+  - Security checks
+- Monitoring Manager
   - Performance tracking
   - Error rate monitoring
   - Alert system
 - Feedback System
   - Human review
-  - Learning loop
-  - Threshold adjustment
+  - Configuration updates
+  - Threshold management
 
 ### Data Management
 - Database Manager
-  - Decision storage
+  - Transaction storage
   - Audit logging
-  - Feedback tracking
-- Memory System
-  - Context management
-  - History tracking
-  - State persistence
+  - Configuration tracking
+- Configuration Manager
+  - Business settings
+  - Security policies
+  - Monitoring thresholds
 
 ## Data Flow
 
 1. Input Processing
-   - Transaction data
-   - Customer information
-   - Document uploads
+   - Transaction data validation
+   - Customer information verification
+   - Document upload handling
 
 2. Decision Making
-   - Agent analysis
+   - Agent-based analysis
+   - Security checks
+   - Compliance validation
    - Safety checks
    - Human review
 

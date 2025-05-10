@@ -1,86 +1,160 @@
-import pytest
-from datetime import datetime
-from agents.compliance_agent import ComplianceAgent
-from utils.validators import validate_compliance_check
+import unittest
+from unittest.mock import patch, MagicMock
+from datetime import datetime, timedelta
+from security.compliance_checker import ComplianceChecker, ComplianceError
+from security.risk_assessment import RiskAssessment
+from security.audit_trail import AuditTrail
 
-@pytest.fixture
-def compliance_agent():
-    """Create a compliance agent instance."""
-    return ComplianceAgent(config={
-        "model": "gpt-4.5",
-        "regulatory_framework": ["RBI", "SEBI", "DPDP Act", "GDPR"],
-        "audit_frequency": "daily",
-        "review_required": True
-    })
+class TestComplianceChecker(unittest.TestCase):
+    def setUp(self):
+        self.config = {
+            "data_protection": {
+                "encryption_required": True,
+                "key_rotation_days": 90,
+                "backup_retention_days": 365
+            },
+            "data_retention": {
+                "max_days": 365,
+                "audit_logs": 365,
+                "access_logs": 90
+            },
+            "audit": {
+                "enabled": True,
+                "log_level": "INFO",
+                "retention_days": 365
+            },
+            "encryption": {
+                "algorithm": "AES-256-GCM",
+                "key_size": 256
+            }
+        }
+        self.compliance_checker = ComplianceChecker(self.config)
+        
+    def test_data_protection_check(self):
+        """Test data protection compliance check"""
+        # Test with compliant data
+        data = {
+            "encryption": True,
+            "key_rotation_age": 89,
+            "backup_age": 364
+        }
+        result = self.compliance_checker.check_data_protection(data)
+        self.assertTrue(result["compliant"])
+        
+        # Test with non-compliant data
+        data = {
+            "encryption": False,
+            "key_rotation_age": 91,
+            "backup_age": 366
+        }
+        result = self.compliance_checker.check_data_protection(data)
+        self.assertFalse(result["compliant"])
+        self.assertIn("Encryption required", result["issues"])
+        self.assertIn("Key rotation overdue", result["issues"])
+        self.assertIn("Backup retention exceeded", result["issues"])
+        
+    def test_data_retention_check(self):
+        """Test data retention compliance check"""
+        # Test with compliant retention
+        data = {
+            "creation_date": (datetime.now() - timedelta(days=364)).isoformat(),
+            "type": "audit_log"
+        }
+        result = self.compliance_checker.check_data_retention(data)
+        self.assertTrue(result["compliant"])
+        
+        # Test with expired retention
+        data = {
+            "creation_date": (datetime.now() - timedelta(days=366)).isoformat(),
+            "type": "audit_log"
+        }
+        result = self.compliance_checker.check_data_retention(data)
+        self.assertFalse(result["compliant"])
+        self.assertIn("Retention period exceeded", result["issues"])
+        
+    def test_audit_trail_check(self):
+        """Test audit trail compliance check"""
+        # Test with compliant audit trail
+        audit_data = {
+            "event_type": "user_login",
+            "timestamp": datetime.now().isoformat(),
+            "user_id": "user123",
+            "risk_level": "low"
+        }
+        result = self.compliance_checker.check_audit_trail(audit_data)
+        self.assertTrue(result["compliant"])
+        
+        # Test with non-compliant audit trail
+        audit_data = {
+            "event_type": "user_login",
+            "timestamp": datetime.now().isoformat(),
+            "user_id": "user123"
+        }
+        result = self.compliance_checker.check_audit_trail(audit_data)
+        self.assertFalse(result["compliant"])
+        self.assertIn("Missing risk level", result["issues"])
+        
+    def test_encryption_check(self):
+        """Test encryption compliance check"""
+        # Test with compliant encryption
+        encryption_data = {
+            "algorithm": "AES-256-GCM",
+            "key_size": 256,
+            "key_rotation_age": 89
+        }
+        result = self.compliance_checker.check_encryption(encryption_data)
+        self.assertTrue(result["compliant"])
+        
+        # Test with non-compliant encryption
+        encryption_data = {
+            "algorithm": "AES-128-CBC",
+            "key_size": 128,
+            "key_rotation_age": 91
+        }
+        result = self.compliance_checker.check_encryption(encryption_data)
+        self.assertFalse(result["compliant"])
+        self.assertIn("Weak encryption algorithm", result["issues"])
+        self.assertIn("Key size too small", result["issues"])
+        self.assertIn("Key rotation overdue", result["issues"])
+        
+    def test_compliance_validation(self):
+        """Test overall compliance validation"""
+        # Test with compliant data
+        data = {
+            "encryption": True,
+            "key_rotation_age": 89,
+            "backup_age": 364,
+            "creation_date": (datetime.now() - timedelta(days=364)).isoformat(),
+            "type": "audit_log",
+            "algorithm": "AES-256-GCM",
+            "key_size": 256
+        }
+        result = self.compliance_checker.validate_compliance(data)
+        self.assertTrue(result["compliant"])
+        
+        # Test with non-compliant data
+        data = {
+            "encryption": False,
+            "key_rotation_age": 91,
+            "backup_age": 366,
+            "creation_date": (datetime.now() - timedelta(days=366)).isoformat(),
+            "type": "audit_log",
+            "algorithm": "AES-128-CBC",
+            "key_size": 128
+        }
+        result = self.compliance_checker.validate_compliance(data)
+        self.assertFalse(result["compliant"])
+        self.assertIn("Encryption required", result["issues"])
+        self.assertIn("Key rotation overdue", result["issues"])
+        self.assertIn("Backup retention exceeded", result["issues"])
+        self.assertIn("Retention period exceeded", result["issues"])
+        self.assertIn("Weak encryption algorithm", result["issues"])
+        self.assertIn("Key size too small", result["issues"])
+        
+    def test_compliance_exception(self):
+        """Test compliance exception handling"""
+        with self.assertRaises(ComplianceError):
+            self.compliance_checker.validate_compliance({})
 
-@pytest.fixture
-def test_transaction():
-    """Create a test transaction."""
-    return {
-        "amount": 5000,
-        "location": "Mumbai",
-        "customer_id": "CUST123456",
-        "timestamp": datetime.utcnow().isoformat()
-    }
-
-def test_insider_trading(compliance_agent, test_transaction):
-    """Test insider trading detection."""
-    # Create insider trading scenario
-    test_transaction["insider_id"] = "INSIDER123"
-    test_transaction["company_code"] = "INDUSIND"
-    
-    result = compliance_agent.check_insider_trading(test_transaction)
-    
-    assert validate_compliance_check(result)
-    assert result["compliance_status"] == "REJECTED"
-    assert result["risk_level"] == "HIGH"
-    assert result["action_required"] == True
-    assert "insider trading" in result["analysis"]
-
-def test_aml_pattern(compliance_agent, test_transaction):
-    """Test AML pattern detection."""
-    # Create AML pattern
-    test_transaction["amount"] = 100000
-    test_transaction["location"] = "Cayman Islands"
-    test_transaction["beneficiary"] = "Shell Company"
-    
-    result = compliance_agent.check_aml_patterns(test_transaction)
-    
-    assert validate_compliance_check(result)
-    assert result["compliance_status"] == "FLAGGED"
-    assert result["risk_level"] == "HIGH"
-    assert result["action_required"] == True
-    assert "AML pattern" in result["analysis"]
-
-def test_kyc_compliance(compliance_agent, test_customer):
-    """Test KYC compliance."""
-    # Create KYC compliance check
-    result = compliance_agent.check_kyc_compliance(test_customer)
-    
-    assert validate_compliance_check(result)
-    assert result["compliance_status"] == "APPROVED"
-    assert result["risk_level"] == "LOW"
-    assert result["action_required"] == False
-    assert "KYC compliant" in result["analysis"]
-
-def test_data_privacy(compliance_agent, test_data):
-    """Test data privacy compliance."""
-    # Create data privacy check
-    result = compliance_agent.check_data_privacy(test_data)
-    
-    assert validate_compliance_check(result)
-    assert result["compliance_status"] == "APPROVED"
-    assert result["risk_level"] == "LOW"
-    assert result["action_required"] == False
-    assert "data privacy compliant" in result["analysis"]
-
-def test_regulatory_reporting(compliance_agent, test_transaction):
-    """Test regulatory reporting."""
-    # Create regulatory reporting check
-    result = compliance_agent.generate_regulatory_report(test_transaction)
-    
-    assert validate_compliance_check(result)
-    assert result["report_generated"] == True
-    assert result["compliance_status"] == "APPROVED"
-    assert result["action_required"] == False
-    assert "regulatory report" in result["analysis"]
+if __name__ == '__main__':
+    unittest.main()

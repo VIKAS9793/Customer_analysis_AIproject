@@ -1,17 +1,18 @@
 encryption:
-  key_size: 256
-  algorithm: AES-256-GCM
-  key_rotation_days: 90
-  key_storage: HSM
+  key_size: ${BUSINESS_ENCRYPTION_KEY_SIZE}
+  algorithm: 
+  key_rotation_days: ${BUSINESS_ENCRYPTION_ROTATION_DAYS}
+  key_storage: ${BUSINESS_KEY_STORAGE}
   key_management:
     provider: HSM
     key_types:
-      - RSA
-      - ECDSA
-      - AES
+      - ${BUSINESS_ENCRYPTION_TYPE_1}
+      - ${BUSINESS_ENCRYPTION_TYPE_2}
+      - ${BUSINESS_ENCRYPTION_TYPE_3}
     key_sizes:
-      RSA: 4096
-      ECDSA: 384
+      ${BUSINESS_ENCRYPTION_TYPE_1}: ${BUSINESS_KEY_SIZE_1}
+      ${BUSINESS_ENCRYPTION_TYPE_2}: ${BUSINESS_KEY_SIZE_2}
+      ${BUSINESS_ENCRYPTION_TYPE_3}: ${BUSINESS_KEY_SIZE_3}
       AES: 256
   crypto_algorithms:
     signing:

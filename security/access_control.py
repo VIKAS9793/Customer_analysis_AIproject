@@ -4,6 +4,8 @@ from datetime import datetime, timedelta
 from .rbac import RBAC
 from .risk_assessment import RiskAssessment
 from .audit_trail import AuditTrail
+from config.secrets_manager import SecretsManager
+from security.key_management import SecureKeyManager
 
 class AccessControl:
     """
@@ -22,48 +24,109 @@ class AccessControl:
                 - policies: Access control policies
                 - risk_assessment: Risk assessment parameters
                 - audit: Audit configuration
+                - compliance: Compliance requirements
         """
         self.config = config
         self.logger = logging.getLogger(__name__)
         
-        # Initialize components
+        # Initialize security components
+        self.secrets_manager = SecretsManager()
+        self.key_manager = SecureKeyManager(config)
+        
+        # Initialize access control components
         self.rbac = RBAC(config)
         self.risk_assessment = RiskAssessment(config)
         self.audit_trail = AuditTrail(config)
         
-        # Load access control policies
+        # Load access control policies and compliance requirements
         self.policies = self._load_policies()
+        self.compliance_requirements = self._load_compliance_requirements()
         
     def _load_policies(self) -> Dict[str, Any]:
         """Load access control policies from configuration"""
         try:
-            policies = self.config.get("policies", {
-                "authentication": {
-                    "required": True,
-                    "methods": ["password", "2fa"],
-                    "session_timeout": 3600
-                },
-                "authorization": {
-                    "required": True,
-                    "permission_check": True,
-                    "role_hierarchy": True
-                },
-                "resource_access": {
-                    "encryption": True,
-                    "audit": True,
-                    "rate_limit": True
-                },
-                "risk_management": {
-                    "assessment": True,
-                    "threshold": "medium",
-                    "response": "block"
+            # Load encrypted policies from secrets manager
+            encrypted_policies = self.secrets_manager.get_secret("ACCESS_CONTROL_POLICIES")
+            if not encrypted_policies:
+                # Use default policies if none found
+                policies = {
+                    "authentication": {
+                        "required": True,
+                        "methods": ["password", "2fa", "biometric"],
+                        "session_timeout": 900  # 15 minutes
+                    },
+                    "authorization": {
+                        "required": True,
+                        "permission_check": True,
+                        "role_hierarchy": True,
+                        "least_privilege": True
+                    },
+                    "resource_access": {
+                        "encryption": True,
+                        "audit": True,
+                        "rate_limit": True,
+                        "data_masking": True
+                    },
+                    "risk_management": {
+                        "assessment": True,
+                        "threshold": "medium",
+                        "response": "block",
+                        "monitoring": True
+                    }
                 }
-            })
-            return policies
+                # Encrypt and store policies
+                self.secrets_manager.set_secret("ACCESS_CONTROL_POLICIES", 
+                                             self.key_manager.encrypt_value(str(policies)))
+                return policies
+                
+            # Decrypt and return stored policies
+            return eval(self.key_manager.decrypt_value(encrypted_policies))
             
         except Exception as e:
             self.logger.error(f"Failed to load policies: {str(e)}")
             raise PolicyLoadError(f"Failed to load access control policies: {str(e)}") from e
+
+    def _load_compliance_requirements(self) -> Dict[str, Any]:
+        """Load compliance requirements from configuration"""
+        try:
+            # Load encrypted compliance requirements
+            encrypted_requirements = self.secrets_manager.get_secret("COMPLIANCE_REQUIREMENTS")
+            if not encrypted_requirements:
+                # Use default compliance requirements
+                requirements = {
+                    "standards": [
+                        "ISO/IEC 27001:2022",
+                        "NIST SP 800-53 Rev. 5",
+                        "PCI DSS v3.2.1"
+                    ],
+                    "controls": {
+                        "access_control": {
+                            "rbac": True,
+                            "least_privilege": True,
+                            "audit_trail": True
+                        },
+                        "authentication": {
+                            "multi_factor": True,
+                            "biometric": True,
+                            "session_timeout": True
+                        },
+                        "authorization": {
+                            "permission_check": True,
+                            "role_hierarchy": True
+                        }
+                    }
+                }
+                # Encrypt and store requirements
+                self.secrets_manager.set_secret("COMPLIANCE_REQUIREMENTS", 
+                                             self.key_manager.encrypt_value(str(requirements)))
+                return requirements
+                
+            # Decrypt and return stored requirements
+            return eval(self.key_manager.decrypt_value(encrypted_requirements))
+            
+        except Exception as e:
+            self.logger.error(f"Failed to load compliance requirements: {str(e)}")
+            raise ComplianceLoadError(f"Failed to load compliance requirements: {str(e)}") from e
     
     def check_access(self, user_id: str, resource: str, action: str) -> bool:
         """
@@ -81,6 +144,19 @@ class AccessControl:
             AccessControlError: If access control check fails
         """
         try:
+            # Verify compliance requirements
+            if not self._verify_compliance_requirements(user_id, resource, action):
+                self.audit_trail.log_event(
+                    "compliance_failure",
+                    {
+                        "user_id": user_id,
+                        "resource": resource,
+                        "action": action,
+                        "reason": "Compliance requirements not met"
+                    }
+                )
+                return False
+                
             # Authenticate user
             if not self._authenticate_user(user_id):
                 self.audit_trail.log_event(
@@ -93,13 +169,15 @@ class AccessControl:
                     }
                 )
                 return False
-            
+                
             # Get user role and permissions
             role = self.rbac.get_user_role(user_id)
             permissions = self.rbac.get_user_permissions(user_id)
             
-            # Check authorization
-            if not self._authorize(user_id, role, permissions, resource, action):
+            # Check authorization with compliance
+            if not self._check_authorization_with_compliance(
+                user_id, role, permissions, resource, action
+            ):
                 self.audit_trail.log_event(
                     "authorization_failure",
                     {

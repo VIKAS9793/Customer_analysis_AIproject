@@ -53,8 +53,9 @@ security:
     enabled: true
     interval: "1d"
   secrets_management:
-    provider: "vault"
-    path: "customerai/secret"
+    # Business must configure their own secrets management
+    provider: ${BUSINESS_SECRETS_PROVIDER}
+    path: ${BUSINESS_SECRETS_PATH}
 
 # Business-specific Customization Examples
 examples:

@@ -8,52 +8,118 @@ that all responses are grounded in verifiable data.
 import logging
 from typing import Any, Dict, List, Optional
 
-from knowledge.base import KnowledgeBase
-
 logger = logging.getLogger(__name__)
 
 
+from .validators import ResponseValidator
+
 class AntiHallucinationGuard:
     """
-    Applies strict prompt filters, source validation, and fallback responses.
+    Robust anti-hallucination system with multiple layers of validation.
 
-    This class implements various safety measures to prevent hallucinations
-    and ensure that all responses are properly sourced and verified.
+    This class implements comprehensive safety measures to prevent:
+    1. Hallucinations (making things up)
+    2. Data inconsistencies
+    3. Confidence drift
+    4. Source verification failures
     """
 
-    def __init__(self, knowledge_base: Optional[KnowledgeBase] = None):
-        """
-        Initialize the anti-hallucination guard.
-
-        Args:
-            knowledge_base: Optional knowledge base for source verification
-        """
-        self.knowledge_base = knowledge_base
+    def __init__(self):
+        """Initialize the anti-hallucination guard."""
         self.fallback_message = "I do not have enough data to answer accurately."
+        self.response_validator = ResponseValidator()
+        self.confidence_threshold = 0.85
+        self.max_retries = 3
+        self.validation_history = []
 
     def apply_prompt_filters(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """
-        Apply prompt filters to prevent hallucinations.
+        Apply comprehensive prompt filters and validation.
 
         Args:
             task: The task to filter
 
         Returns:
-            The filtered task
-        """
-        logger.info("Applying prompt filters")
+            The filtered and validated task
 
-        # Add anti-hallucination instructions to the prompt
+        Raises:
+            ValueError: If task cannot be validated
+        """
+        logger.info("Applying comprehensive validation")
+
+        # Basic validation
+        if not isinstance(task, dict):
+            raise ValueError("Task must be a dictionary")
+
+        # Add anti-hallucination instructions
         if "prompt" in task:
             task["prompt"] = self._add_anti_hallucination_instructions(task["prompt"])
 
-        # Add source verification requirements
-        task["require_sources"] = True
+        # Add validation requirements
+        task["validation"] = {
+            "required": True,
+            "confidence_threshold": self.confidence_threshold,
+            "max_retries": self.max_retries
+        }
 
-        # Add confidence threshold
-        task["confidence_threshold"] = 0.85
+        # Add metadata
+        task["metadata"] = {
+            "timestamp": datetime.now().isoformat(),
+            "validation_history": self.validation_history
+        }
 
         return task
+
+    def validate_response(self, response: str, task: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Validate AI response against multiple criteria.
+
+        Args:
+            response: AI generated response
+            task: Original task with validation requirements
+
+        Returns:
+            Dict containing validation results
+
+        Raises:
+            ValueError: If response fails validation
+        """
+        logger.info("Validating response")
+
+        # Validate response
+        validation_result = self.response_validator.validate(response)
+
+        # Check confidence
+        if "confidence" in task:
+            if task["confidence"] < self.confidence_threshold:
+                validation_result["issues"].append({
+                    "rule": "confidence_check",
+                    "severity": "high",
+                    "description": "Response confidence below threshold",
+                    "timestamp": datetime.now().isoformat()
+                })
+
+        # Check retries
+        if len(self.validation_history) >= self.max_retries:
+            validation_result["issues"].append({
+                "rule": "retry_limit",
+                "severity": "critical",
+                "description": "Maximum validation retries exceeded",
+                "timestamp": datetime.now().isoformat()
+            })
+
+        # Update history
+        self.validation_history.append({
+            "response": response,
+            "validation": validation_result,
+            "timestamp": datetime.now().isoformat()
+        })
+
+        # Check for critical issues
+        if any(issue["severity"] == "critical" for issue in validation_result["issues"]):
+            raise ValueError("Response failed critical validation checks")
+
+        return validation_result
 
     def _add_anti_hallucination_instructions(self, prompt: str) -> str:
         """

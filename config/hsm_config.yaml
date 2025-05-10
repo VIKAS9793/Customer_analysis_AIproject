@@ -1,10 +1,14 @@
 hsm:
   # Key Management Settings
-  key_rotation_days: 90
+  # Business must configure their own key rotation policy
+  key_rotation_days: ${BUSINESS_KEY_ROTATION_DAYS}
+  
+  # Business must configure their own key sizes
   key_sizes:
-    RSA: 4096
-    ECDSA: 384
-    AES: 256
+    aes: ${BUSINESS_AES_KEY_SIZE}
+    rsa: ${BUSINESS_RSA_KEY_SIZE}
+    ecc: ${BUSINESS_ECC_KEY_SIZE}
+    dh: ${BUSINESS_DH_KEY_SIZE}56
   
   # Supported Algorithms
   crypto_algorithms:

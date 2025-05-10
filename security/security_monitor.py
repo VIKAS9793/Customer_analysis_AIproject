@@ -5,6 +5,9 @@ import json
 from pathlib import Path
 import requests
 from prometheus_client import Counter, Gauge
+from config.secrets_manager import SecretsManager
+from security.key_management import SecureKeyManager
+from security.audit_trail import AuditTrail
 
 logger = logging.getLogger(__name__)
 
@@ -33,11 +36,20 @@ class SecurityMonitor:
                 - alert_thresholds: Dictionary of alert thresholds
                 - notification_channels: List of notification channels
                 - compliance_standards: List of compliance standards
+                - monitoring_intervals: Dictionary of monitoring intervals
         """
         self.config = config
         self.alerts = []
         self.violations = []
         self.last_check = datetime.now()
+        
+        # Initialize security components
+        self.secrets_manager = SecretsManager()
+        self.key_manager = SecureKeyManager(config)
+        self.audit_trail = AuditTrail(config)
+        
+        # Load compliance requirements
+        self.compliance_requirements = self._load_compliance_requirements()
         
         # Verify configuration against real-world standards
         self._verify_configuration()
@@ -64,6 +76,29 @@ class SecurityMonitor:
             if channel not in valid_channels:
                 raise ValueError(f"Invalid notification channel: {channel}")
                 
+        # Verify compliance requirements
+        required_standards = [
+            "ISO/IEC 27001:2022",
+            "NIST SP 800-53 Rev. 5",
+            "PCI DSS v3.2.1"
+        ]
+        
+        for standard in required_standards:
+            if standard not in self.compliance_requirements["standards"]:
+                raise ValueError(f"Missing required compliance standard: {standard}")
+                
+        # Verify monitoring intervals
+        required_intervals = {
+            "encryption_check": 3600,  # 1 hour
+            "access_control_check": 900,  # 15 minutes
+            "audit_log_check": 3600,  # 1 hour
+            "compliance_check": 86400  # 24 hours
+        }
+        
+        for interval, value in required_intervals.items():
+            if interval not in self.config.get("monitoring_intervals", {}):
+                raise ValueError(f"Missing required monitoring interval: {interval}")
+                
     def initialize_metrics(self) -> None:
         """Initialize security monitoring metrics."""
         # Initialize standard security metrics
@@ -76,6 +111,44 @@ class SecurityMonitor:
         SECURITY_VIOLATIONS.labels(category='access_control')
         SECURITY_VIOLATIONS.labels(category='data_protection')
         SECURITY_VIOLATIONS.labels(category='audit_trail')
+        SECURITY_VIOLATIONS.labels(category='compliance')
+        
+        # Initialize compliance metrics
+        self.initialize_compliance_metrics()
+        
+    def initialize_compliance_metrics(self) -> None:
+        """Initialize compliance monitoring metrics."""
+        # Compliance check metrics
+        COMPLIANCE_CHECKS = Counter(
+            'compliance_checks_total',
+            'Total compliance checks performed',
+            ['standard', 'control']
+        )
+        
+        # Compliance violation metrics
+        COMPLIANCE_VIOLATIONS = Counter(
+            'compliance_violations_total',
+            'Total compliance violations detected',
+            ['standard', 'control', 'severity']
+        )
+        
+        # Compliance check duration metrics
+        COMPLIANCE_CHECK_DURATION = Gauge(
+            'compliance_check_duration_seconds',
+            'Time taken to perform compliance checks',
+            ['standard', 'control']
+        )
+        
+        # Initialize metrics for each standard
+        for standard in self.compliance_requirements["standards"]:
+            for control in self.compliance_requirements["controls"]:
+                COMPLIANCE_CHECKS.labels(standard=standard, control=control)
+                COMPLIANCE_VIOLATIONS.labels(
+                    standard=standard, 
+                    control=control, 
+                    severity='high'
+                )
+                COMPLIANCE_CHECK_DURATION.labels(standard=standard, control=control)
         
     def detect_security_events(self, events: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         """
@@ -90,13 +163,146 @@ class SecurityMonitor:
         alerts = []
         
         for event in events:
+            # Verify compliance requirements
+            if not self._verify_compliance(event):
+                self._log_compliance_violation(event)
+                
+            # Check for security violations
             severity = self._determine_severity(event)
             if severity >= self.config['alert_thresholds']['high_severity']:
                 alert = self._generate_alert(event, severity)
                 alerts.append(alert)
                 self._notify_alert(alert)
                 
+            # Update metrics
+            self._update_metrics(event, severity)
+            
         return alerts
+
+    def _verify_compliance(self, event: Dict[str, Any]) -> bool:
+        """Verify event compliance with requirements"""
+        try:
+            # Check encryption requirements
+            if not self._verify_encryption_compliance(event):
+                return False
+                
+            # Check access control requirements
+            if not self._verify_access_control_compliance(event):
+                return False
+                
+            # Check audit trail requirements
+            if not self._verify_audit_trail_compliance(event):
+                return False
+                
+            return True
+            
+        except Exception as e:
+            self.logger.error(f"Failed to verify compliance: {str(e)}")
+            return False
+
+    def _verify_encryption_compliance(self, event: Dict[str, Any]) -> bool:
+        """Verify encryption compliance"""
+        try:
+            # Check encryption key rotation
+            if self.key_manager.needs_key_rotation():
+                self._log_compliance_violation({
+                    "type": "encryption",
+                    "violation": "key_rotation",
+                    "details": "Key rotation required"
+                })
+                return False
+                
+            # Check data encryption
+            if event.get("data_encrypted") != True:
+                self._log_compliance_violation({
+                    "type": "encryption",
+                    "violation": "data_encryption",
+                    "details": "Data not encrypted"
+                })
+                return False
+                
+            return True
+            
+        except Exception as e:
+            self.logger.error(f"Failed to verify encryption compliance: {str(e)}")
+            return False
+
+    def _verify_access_control_compliance(self, event: Dict[str, Any]) -> bool:
+        """Verify access control compliance"""
+        try:
+            # Check RBAC implementation
+            if not self.access_control.rbac.is_role_based():
+                self._log_compliance_violation({
+                    "type": "access_control",
+                    "violation": "rbac",
+                    "details": "RBAC not implemented"
+                })
+                return False
+                
+            # Check least privilege
+            if not self.access_control.rbac.enforces_least_privilege():
+                self._log_compliance_violation({
+                    "type": "access_control",
+                    "violation": "least_privilege",
+                    "details": "Least privilege not enforced"
+                })
+                return False
+                
+            return True
+            
+        except Exception as e:
+            self.logger.error(f"Failed to verify access control compliance: {str(e)}")
+            return False
+
+    def _verify_audit_trail_compliance(self, event: Dict[str, Any]) -> bool:
+        """Verify audit trail compliance"""
+        try:
+            # Check audit trail existence
+            if not self.audit_trail.is_enabled():
+                self._log_compliance_violation({
+                    "type": "audit_trail",
+                    "violation": "missing",
+                    "details": "Audit trail not enabled"
+                })
+                return False
+                
+            # Check audit trail integrity
+            if not self.audit_trail.verify_integrity():
+                self._log_compliance_violation({
+                    "type": "audit_trail",
+                    "violation": "integrity",
+                    "details": "Audit trail integrity compromised"
+                })
+                return False
+                
+            return True
+            
+        except Exception as e:
+            self.logger.error(f"Failed to verify audit trail compliance: {str(e)}")
+            return False
+
+    def _log_compliance_violation(self, violation: Dict[str, Any]) -> None:
+        """Log compliance violation"""
+        try:
+            # Update metrics
+            COMPLIANCE_VIOLATIONS.labels(
+                standard=violation["type"],
+                control=violation["violation"],
+                severity="high"
+            ).inc()
+            
+            # Log event
+            self.audit_trail.log_event(
+                "compliance_violation",
+                {
+                    "type": violation["type"],
+                    "violation": violation["violation"],
+                    "details": violation["details"]
+                }
+            )
+            
+        except Exception as e:
+            self.logger.error(f"Failed to log compliance violation: {str(e)}")
     
     def _determine_severity(self, event: Dict[str, Any]) -> float:
         """Determine the severity of a security event."""

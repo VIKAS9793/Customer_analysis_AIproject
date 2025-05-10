@@ -1,25 +1,104 @@
 """
-AES-256 Encryption System
+Secure AES-256 Encryption System
 
-This module implements AES-256 encryption for data protection.
+This module implements secure AES-256 encryption with key management.
 """
 
-from Crypto.Cipher import AES
-from Crypto.Random import get_random_bytes
-from Crypto.Protocol.KDF import PBKDF2
-import base64
 import logging
 from typing import Tuple, Union
+from cryptography.fernet import Fernet
+from security.key_management import SecureKeyManager
+from config.config_manager import ConfigManager
+
+logger = logging.getLogger(__name__)
 
 class EncryptionError(Exception):
     """Raised when encryption fails"""
     pass
 
-class AES256Encryption:
-    def __init__(self, key: bytes = None):
-        self.key = key or self._generate_key()
-        self.logger = logging.getLogger(__name__)
-        self.block_size = AES.block_size
+class SecureEncryption:
+    def __init__(self, config: Dict[str, Any]):
+        """
+        Initialize secure encryption system.
+        
+        Args:
+            config: Configuration containing:
+                - key_rotation_days: Number of days before key rotation
+                - key_size: Size of encryption keys
+        """
+        self.config = config
+        self.config_manager = ConfigManager()
+        
+        # Initialize key manager
+        self.key_manager = SecureKeyManager(config)
+        
+        # Get encryption key
+        self.encryption_key = self.key_manager.generate_encryption_key()
+        
+        # Initialize Fernet for encryption
+        self.fernet = Fernet(base64.urlsafe_b64encode(self.encryption_key))
+        
+    def encrypt(self, data: Union[str, bytes]) -> Tuple[bytes, bytes]:
+        """Encrypt data using secure key management"""
+        try:
+            if isinstance(data, str):
+                data = data.encode()
+            
+            # Generate session key
+            session_key = self.key_manager.generate_session_key()
+            
+            # Encrypt data using session key
+            encrypted_data = self.fernet.encrypt(data)
+            
+            # Encrypt session key using encryption key
+            encrypted_session_key = self.key_manager.encrypt_key(session_key, self.encryption_key)
+            
+            return encrypted_session_key, encrypted_data
+            
+        except Exception as e:
+            logger.error(f"Encryption failed: {str(e)}")
+            raise EncryptionError(f"Encryption failed: {str(e)}")
+            
+    def decrypt(self, encrypted_session_key: bytes, encrypted_data: bytes) -> bytes:
+        """Decrypt data using secure key management"""
+        try:
+            # Decrypt session key
+            session_key = self.key_manager.decrypt_key(encrypted_session_key, self.encryption_key)
+            
+            # Decrypt data using session key
+            decrypted_data = self.fernet.decrypt(encrypted_data)
+            
+            return decrypted_data
+            
+        except Exception as e:
+            logger.error(f"Decryption failed: {str(e)}")
+            raise EncryptionError(f"Decryption failed: {str(e)}")
+            
+    def needs_key_rotation(self) -> bool:
+        """Check if key rotation is needed"""
+        last_rotation = self.config_manager.get_config("encryption", "last_rotation")
+        return self.key_manager.needs_key_rotation(last_rotation)
+            
+    def rotate_keys(self) -> None:
+        """Rotate encryption keys"""
+        try:
+            # Rotate keys in key manager
+            self.key_manager.rotate_keys()
+            
+            # Get new encryption key
+            self.encryption_key = self.key_manager.generate_encryption_key()
+            
+            # Update Fernet with new key
+            self.fernet = Fernet(base64.urlsafe_b64encode(self.encryption_key))
+            
+            # Update last rotation time
+            self.config_manager.set_config("encryption", "last_rotation", datetime.now())
+            
+            logger.info("Encryption keys successfully rotated")
+            
+        except Exception as e:
+            logger.error(f"Failed to rotate encryption keys: {str(e)}")
+            raise EncryptionError("Failed to rotate encryption keys")
     
     def _generate_key(self) -> bytes:
         """Generate secure 256-bit key"""

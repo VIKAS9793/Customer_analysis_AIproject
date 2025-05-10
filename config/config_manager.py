@@ -127,24 +127,67 @@ class ConfigManager:
         
         # Validate security configuration
         security_config = self.config.get('security', {})
-        if not security_config.get('encryption', {}).get('key_management_system'):
+        encryption = security_config.get('encryption', {})
+        
+        # Key Management Validation
+        if not encryption.get('key_management_system'):
             raise ConfigError("Security configuration must specify key management system")
         
-        # Validate compliance configuration
+        # Key Rotation Validation
+        rotation = encryption.get('key_rotation', {})
+        if not rotation.get('interval_days') or rotation.get('interval_days') < 30:
+            raise ConfigError("Key rotation interval must be at least 30 days")
+        
+        # Key Size Validation
+        key_sizes = encryption.get('key_sizes', {})
+        if key_sizes.get('aes') < 256:
+            raise ConfigError("AES key size must be at least 256 bits")
+        if key_sizes.get('rsa') < 3072:
+            raise ConfigError("RSA key size must be at least 3072 bits")
+        
+        # HSM Configuration Validation
+        hsm_config = security_config.get('hsm', {})
+        if not hsm_config.get('enabled'):
+            raise ConfigError("HSM must be enabled for key management")
+        if hsm_config.get('key_rotation_days') < 90:
+            raise ConfigError("HSM key rotation interval must be at least 90 days")
+        
+        # Compliance Validation
         compliance_config = self.config.get('compliance', {})
         if not compliance_config.get('standards'):
             raise ConfigError("Compliance configuration must specify regulatory standards")
         
-        # Validate secrets management
-        if not self.config.get('secrets_management', {}).get('provider'):
-            raise ConfigError("Configuration must specify secrets management provider")
+        # Data Retention Validation
+        if not compliance_config.get('data_retention', {}).get('max_days'):
+            raise ConfigError("Data retention period must be specified")
         
-        # Validate performance settings
+        # Secrets Management Validation
+        secrets_config = self.config.get('secrets_management', {})
+        if not secrets_config.get('provider'):
+            raise ConfigError("Configuration must specify secrets management provider")
+        if not secrets_config.get('encryption_enabled'):
+            raise ConfigError("Secrets must be encrypted")
+        
+        # Monitoring Validation
+        monitoring_config = self.config.get('monitoring', {})
+        if not monitoring_config.get('enabled'):
+            raise ConfigError("Monitoring must be enabled")
+        if monitoring_config.get('alert_thresholds', {}).get('error_rate') < 0.01:
+            raise ConfigError("Error rate threshold must be at least 1%")
+        
+        # Performance Validation
         performance_config = self.config.get('performance', {})
         if not performance_config.get('cache_settings'):
             raise ConfigError("Performance configuration must include cache settings")
         if not performance_config.get('rate_limits'):
             raise ConfigError("Performance configuration must include rate limits")
+        
+        # Authentication Validation
+        auth_config = self.config.get('authentication', {})
+        if not auth_config.get('multi_factor_enabled'):
+            raise ConfigError("Multi-factor authentication must be enabled")
+        if auth_config.get('password_policy', {}).get('min_length') < 12:
+            raise ConfigError("Password minimum length must be at least 12 characters")
                 
     def get_security_config(self) -> Dict[str, Any]:
         """Get security configuration"""
