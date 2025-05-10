@@ -132,3 +132,15 @@ audit.log
 # OS specific
 .DS_Store
 Thumbs.db
+.coverage
+htmlcov/
+*.pyc
+__pycache__/
+*.egg-info/
+venv/
+tests/test_config.json
+tests/conftest.py
+tests/real_world_tests/
+docs/sources.json
+architecture_diagram.png
+audit.log
