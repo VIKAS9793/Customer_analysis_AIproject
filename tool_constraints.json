@@ -1,0 +1,11 @@
+{
+  "python_version": "3.11.8",
+  "dependencies_source": "requirements.txt or pyproject.toml only",
+  "no_hallucination": true,
+  "verify_pip_check": true,
+  "enforce_virtualenv": true,
+  "test_required": true,
+  "output_format": "standardized",
+  "ci_cd_updated": true,
+  "docker_base_image": "python:3.11-slim"
+}

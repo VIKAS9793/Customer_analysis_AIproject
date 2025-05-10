@@ -1,0 +1,29 @@
+{
+    "security_monitoring": {
+        "official_docs": [
+            "https://docs.aws.amazon.com/security-hub/latest/userguide/securityhub-what-is.html",
+            "https://cloud.google.com/security-command-center",
+            "https://azure.microsoft.com/en-us/services/security-center/"
+        ],
+        "implementation_examples": [
+            "https://github.com/aws/aws-security-hub",
+            "https://github.com/google/security-command-center"
+        ],
+        "compliance_standards": [
+            "ISO 27001",
+            "SOC 2",
+            "PCI DSS"
+        ]
+    },
+    "monitoring": {
+        "official_docs": [
+            "https://prometheus.io/docs/",
+            "https://grafana.com/docs/",
+            "https://docs.datadoghq.com/"
+        ],
+        "implementation_examples": [
+            "https://github.com/prometheus/prometheus",
+            "https://github.com/grafana/grafana"
+        ]
+    }
+}

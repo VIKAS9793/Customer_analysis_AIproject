@@ -1,0 +1,33 @@
+encryption:
+  key_size: 256
+  algorithm: AES-256-GCM
+  key_rotation_days: 90
+  key_storage: HSM
+  key_management:
+    provider: HSM
+    key_types:
+      - RSA
+      - ECDSA
+      - AES
+    key_sizes:
+      RSA: 4096
+      ECDSA: 384
+      AES: 256
+  crypto_algorithms:
+    signing:
+      - RSA-PSS
+      - ECDSA
+    encryption:
+      - AES-256-GCM
+      - RSA-OAEP
+    hashing:
+      - SHA-384
+      - SHA-512
+  key_rotation:
+    interval: 90
+    grace_period: 7
+    backup_retention: 365
+  audit:
+    enabled: true
+    log_level: INFO
+    retention_days: 365

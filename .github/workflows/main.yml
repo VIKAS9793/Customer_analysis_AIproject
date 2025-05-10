@@ -1,0 +1,177 @@
+name: Customer Analysis AI CI/CD
+
+# IMPORTANT: This workflow is designed as a foundation for business use.
+# Businesses MUST customize this workflow according to their organization's:
+# 1. Security policies
+# 2. Credential management requirements
+# 3. Monitoring and notification preferences
+# 4. Compliance requirements
+
+# DISCLAIMER:
+# - All credentials, secrets, and API keys must be provided by the business
+# - No default credentials or hardcoded values should be used
+# - Businesses are responsible for:
+#   * Setting up their own notification systems
+#   * Managing their own secrets and credentials
+#   * Implementing organization-specific security measures
+#   * Customizing workflow according to their policies
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.8, 3.9, 3.10]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -r requirements-test.txt
+      - name: Run tests
+        run: |
+          pytest tests/ --cov=. --cov-report=xml
+      - name: Upload coverage report
+        uses: codecov/codecov-action@v2
+        with:
+          file: ./coverage.xml
+          fail_ci_if_error: true
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+      - name: Install linters
+        run: |
+          python -m pip install --upgrade pip
+          pip install flake8 black isort mypy pydocstyle bandit safety
+      - name: Run code style checks
+        run: |
+          flake8 . --max-line-length=100 --ignore=E501
+          black . --check
+          isort . --check-only
+          pydocstyle .
+      - name: Run type checking
+        run: |
+          mypy .
+      - name: Run security linting
+        run: |
+          bandit -r . --recursive
+          safety check
+      - name: Check for security vulnerabilities
+        run: |
+          pip install safety
+          safety check --full-report
+      - name: Check for outdated dependencies
+        run: |
+          pip install pip-audit
+          pip-audit
+      - name: Check for duplicate dependencies
+        run: |
+          pip install pipdeptree
+          pipdeptree --warn-only
+      - name: Check code complexity
+        run: |
+          pip install radon
+          radon cc . --min B
+          radon mi . --min B
+          radon raw .
+          radon hal . --min B
+
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+      - name: Install security tools
+        run: |
+          python -m pip install --upgrade pip
+          pip install bandit safety snyk trufflehog
+      - name: Run security scans
+        run: |
+          bandit -r . --recursive
+          safety check
+          snyk test --file=requirements.txt
+          snyk test --file=requirements-test.txt
+      - name: Scan for secrets
+        run: |
+          trufflehog .
+      - name: Run OWASP Dependency Check
+        run: |
+          wget https://github.com/jeremylong/DependencyCheck/releases/download/v8.0.0/dependency-check-8.0.0-release.zip
+          unzip dependency-check-8.0.0-release.zip
+          cd dependency-check/bin
+          ./dependency-check.sh --project "Customer Analysis AI" --scan ../../ --format "HTML" --out ../../reports
+      - name: Upload security reports
+        uses: actions/upload-artifact@v2
+        with:
+          name: security-reports
+          path: reports/
+
+  build:
+    needs: [test, lint, security]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+      - name: Install build tools
+        run: |
+          python -m pip install --upgrade pip
+          pip install build twine
+      - name: Validate requirements
+        run: |
+          pip install pipreqs
+          pipreqs . --force
+      - name: Build package
+        run: |
+          python -m build
+      - name: Validate package
+        run: |
+          twine check dist/*
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: dist
+          path: dist/
+
+  monitor:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Basic build status
+        run: |
+          echo "Build completed successfully"
+      - name: Update GitHub status
+        uses: actions/github-script@v4
+        with:
+          script: |
+            github.repos.createStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              sha: context.sha,
+              state: 'success',
+              description: 'Build completed successfully',
+              context: 'Build Monitor'
+            })
