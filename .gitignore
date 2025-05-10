@@ -152,3 +152,69 @@ env/
 ENV/
 env.bak/
 venv.bak/
+# Virtual Environment
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# Python Bytecode Cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Cache directories
+.cache/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+*.egg
+
+# IDE specific files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Logs
+*.log
+logs/
+
+# Test coverage reports
+coverage/
+.coverage.*
+*.cover
+
+# Documentation builds
+docs/_build/
+docs/build/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Local development settings
+*.local.py
+*.local.json
+*.local.yaml
+*.local.yml
+
+# Database
+*.db
+*.sqlite3
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
