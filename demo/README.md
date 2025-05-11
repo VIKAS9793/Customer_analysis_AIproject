@@ -19,7 +19,7 @@ A complete demonstration of the FinConnectAI system is available in the [product
 ## Screenshot
 
 ### Dashboard Overview
-![Dashboard Overview](static/images/dashboard_screenshot.png)
+![Dashboard Overview](demo/static/images/dashboard_screenshot.png)
 *System overview showing key metrics and recent fraud detections*
 
 ### Dashboard
