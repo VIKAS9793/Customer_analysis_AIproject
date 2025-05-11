@@ -32,12 +32,6 @@ The demo is optimized for presentation purposes and not for scale or performance
 
 A complete demonstration of the FinConnectAI system is available in the [product demo video](https://drive.google.com/file/d/1scdoP-IC_FkZlT0PYLGWlBW9a4cWOCY_/view?usp=drive_link).
 
-## 4. Screenshot
-
-### Dashboard Overview
-![Dashboard Overview](demo/static/images/dashboard_screenshot.png)
-*System overview showing key metrics and recent fraud detections*
-
 
 ### Dashboard
 *System overview with key metrics and recent fraud detections*
