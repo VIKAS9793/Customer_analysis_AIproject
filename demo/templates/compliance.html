@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinConnectAI - Compliance Checks</title>
+    <link rel="icon" href="/static/images/favicon.ico" type="image/x-icon">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-navy: #0D2E4D;
+            --primary-teal: #008F7A;
+            --secondary-teal-light: #00BFA5;
+            --accent-gray: #F5F7FA;
+            --text-dark: #1A2B3C;
+            --text-light: #6C7A89;
+            --success: #00BFA5;
+            --warning: #FFC107;
+            --danger: #FF5252;
+        }
+        
+        body {
+            font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding-top: 20px;
+            color: var(--text-dark);
+            background-color: var(--accent-gray);
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+        }
+        
+        .navbar-brand span.connect {
+            color: var(--primary-teal);
+        }
+        
+        .navbar-brand span.fin, .navbar-brand span.ai {
+            color: var(--primary-navy);
+        }
+        
+        .card {
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            border: none;
+            border-radius: 8px;
+        }
+        
+        .card-header {
+            font-weight: 600;
+            background-color: white;
+            border-bottom: 2px solid var(--accent-gray);
+            padding: 15px 20px;
+            border-radius: 8px 8px 0 0 !important;
+        }
+        
+        .result-card {
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .progress {
+            height: 25px;
+            border-radius: 6px;
+        }
+        
+        .progress-bar {
+            color: white;
+            font-weight: 500;
+            font-weight: bold;
+            text-align: center;
+            line-height: 25px;
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo-img {
+            height: 40px;
+            width: auto;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-teal);
+            border-color: var(--primary-teal);
+        }
+        
+        .btn-primary:hover, .btn-primary:focus {
+            background-color: var(--secondary-teal-light);
+            border-color: var(--secondary-teal-light);
+        }
+        
+        .nav-link.active {
+            color: var(--primary-teal) !important;
+            font-weight: 600;
+        }
+        .framework-card {
+            margin-bottom: 15px;
+        }
+        .finding-item {
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="pb-3 mb-4 border-bottom">
+            <div class="d-flex align-items-center text-decoration-none">
+                <a href="/" class="text-decoration-none d-flex align-items-center">
+                    <div class="logo-container">
+                        <img src="/static/images/finconnect_logo.png" alt="FinConnectAI Logo" class="logo-img">
+                        <div class="navbar-brand fs-4">
+                            <span class="fin">Fin</span><span class="connect">Connect</span><span class="ai">AI</span>
+                        </div>
+                    </div>
+                </a>
+                <span class="badge ms-2" style="background-color: var(--primary-teal);">Compliance Checks</span>
+            </div>
+        </header>
+        
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-header">Navigation</div>
+                    <div class="card-body">
+                        <div class="list-group">
+                            <a href="/" class="list-group-item list-group-item-action">Dashboard</a>
+                            <a href="/fraud" class="list-group-item list-group-item-action">Fraud Detection</a>
+                            <a href="/kyc" class="list-group-item list-group-item-action">KYC Verification</a>
+                            <a href="/compliance" class="list-group-item list-group-item-action active">Compliance Checks</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card mt-3">
+                    <div class="card-header">System Status</div>
+                    <div class="card-body">
+                        <p class="mb-1"><span class="badge bg-success">Online</span> Fraud Agent</p>
+                        <p class="mb-1"><span class="badge bg-success">Online</span> KYC Agent</p>
+                        <p class="mb-1"><span class="badge bg-success">Online</span> Compliance Checker</p>
+                        <p class="mb-0"><span class="badge bg-success">Online</span> Security Agent</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="col-md-9">
+                <div class="card">
+                    <div class="card-header">Compliance Checker</div>
+                    <div class="card-body">
+                        <p>Verify compliance against various regulatory frameworks.</p>
+                        
+                        <form action="/compliance" method="post">
+                            <div class="row mb-3">
+                                <div class="col-md-12">
+                                    <h5>Data Information</h5>
+                                </div>
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="data_source">Data Source</label>
+                                        <select class="form-select" id="data_source" name="data_source">
+                                            {% for source in data_sources %}
+                                            <option value="{{ source }}" {% if source == data_source %}selected{% endif %}>{{ source }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="region">Region</label>
+                                        <select class="form-select" id="region" name="region">
+                                            {% for r in regions %}
+                                            <option value="{{ r }}" {% if r == region %}selected{% endif %}>{{ r }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="data_type">Data Type</label>
+                                        <select class="form-select" id="data_type" name="data_type">
+                                            {% for type in data_types %}
+                                            <option value="{{ type }}" {% if type == data_type %}selected{% endif %}>{{ type }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Compliance Frameworks</label>
+                                        <div class="border rounded p-2">
+                                            {% for framework in all_frameworks %}
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" value="{{ framework }}" id="framework_{{ loop.index }}" name="frameworks" {% if framework in selected_frameworks %}checked{% endif %}>
+                                                <label class="form-check-label" for="framework_{{ loop.index }}">
+                                                    {{ framework }}
+                                                </label>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <button type="submit" class="btn btn-primary">Check Compliance</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                {% if result %}
+                <div class="card result-card">
+                    <div class="card-header">Compliance Results</div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5>Data Details</h5>
+                                <table class="table table-bordered">
+                                    <tr>
+                                        <th>Data Source</th>
+                                        <td>{{ result.data_source }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Region</th>
+                                        <td>{{ result.region }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Data Type</th>
+                                        <td>{{ result.data_type }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Frameworks</th>
+                                        <td>{{ ", ".join(result.frameworks) }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Timestamp</th>
+                                        <td>{{ result.timestamp }}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="col-md-6">
+                                <h5>Overall Compliance Assessment</h5>
+                                <p><strong>Compliance Score:</strong> {{ "%.2f"|format(result.overall_score) }}</p>
+                                
+                                <!-- Compliance score progress bar -->
+                                <div class="progress mb-3">
+                                    <!-- Using a data attribute to store the score for JavaScript -->
+                                    <div class="progress-bar" id="compliance-progress-bar" role="progressbar" 
+                                         data-score="{{ result.overall_score }}">
+                                        {{ "%.2f"|format(result.overall_score) }}
+                                    </div>
+                                </div>
+                                
+                                <script>
+                                    // Apply styling after the DOM is loaded
+                                    document.addEventListener('DOMContentLoaded', function() {
+                                        const progressBar = document.getElementById('compliance-progress-bar');
+                                        const score = parseFloat(progressBar.getAttribute('data-score'));
+                                        
+                                        // Set the width based on the score
+                                        progressBar.style.width = (score * 100) + '%';
+                                        progressBar.setAttribute('aria-valuenow', score * 100);
+                                        progressBar.setAttribute('aria-valuemin', '0');
+                                        progressBar.setAttribute('aria-valuemax', '100');
+                                        
+                                        // Apply the appropriate color class based on the score
+                                        if (score < 0.8) {
+                                            progressBar.classList.add('bg-danger');
+                                        } else if (score < 0.9) {
+                                            progressBar.classList.add('bg-warning');
+                                        } else {
+                                            progressBar.classList.add('bg-success');
+                                        }
+                                    });
+                                </script>
+                            </div>
+                        </div>
+                        
+                        <div class="row mt-4">
+                            <div class="col-md-12">
+                                <h5>Framework-Specific Results</h5>
+                                <div class="row">
+                                    {% for framework, details in result.framework_results.items() %}
+                                    <div class="col-md-6">
+                                        <div class="card framework-card">
+                                            <div class="card-header d-flex justify-content-between align-items-center">
+                                                <span>{{ framework }}</span>
+                                                <span class="badge {% if details.score >= 0.9 %}bg-success{% elif details.score >= 0.8 %}bg-warning{% else %}bg-danger{% endif %}">
+                                                    {{ "%.2f"|format(details.score) }}
+                                                </span>
+                                            </div>
+                                            <div class="card-body">
+                                                <p><strong>Status:</strong> {{ details.status }}</p>
+                                                
+                                                {% if details.findings %}
+                                                <p><strong>Findings:</strong></p>
+                                                <ul class="mb-3">
+                                                    {% for finding in details.findings %}
+                                                    <li class="finding-item">{{ finding }}</li>
+                                                    {% endfor %}
+                                                </ul>
+                                                {% else %}
+                                                <p><strong>Findings:</strong> No issues found</p>
+                                                {% endif %}
+                                                
+                                                <p><strong>Recommendations:</strong></p>
+                                                <ul>
+                                                    {% for recommendation in details.recommendations %}
+                                                    <li>{{ recommendation }}</li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                
+                <div class="card">
+                    <div class="card-header">Recent Compliance Check History</div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Timestamp</th>
+                                        <th>Data Source</th>
+                                        <th>Region</th>
+                                        <th>Frameworks</th>
+                                        <th>Score</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in history %}
+                                    <tr>
+                                        <td>{{ item.timestamp }}</td>
+                                        <td>{{ item.data_source }}</td>
+                                        <td>{{ item.region }}</td>
+                                        <td>{{ ", ".join(item.frameworks) }}</td>
+                                        <td>
+                                            <span class="badge {% if item.overall_score >= 0.9 %}bg-success{% elif item.overall_score >= 0.8 %}bg-warning{% else %}bg-danger{% endif %}">
+                                                {{ "%.2f"|format(item.overall_score) }}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <footer class="pt-3 mt-4 text-muted border-top">
+            <div class="row">
+                <div class="col-md-6">
+                    &copy; 2025 FinConnectAI
+                </div>
+                <div class="col-md-6 text-end">
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#disclaimerModal">Disclaimer</a>
+                </div>
+            </div>
+        </footer>
+    </div>
+    
+    <!-- Disclaimer Modal -->
+    <div class="modal fade" id="disclaimerModal" tabindex="-1" aria-labelledby="disclaimerModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="disclaimerModalLabel">Demo Disclaimer</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>This is a demonstration interface for the FinConnectAI system. All data shown is simulated and does not represent real customers or transactions.</p>
+                    <p>The system demonstrates capabilities in:</p>
+                    <ul>
+                        <li>KYC verification and identity checks</li>
+                        <li>Fraud detection and risk assessment</li>
+                        <li>Regulatory compliance verification</li>
+                        <li>Customer insights and analytics</li>
+                    </ul>
+                    <p>For more information, please contact the development team.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

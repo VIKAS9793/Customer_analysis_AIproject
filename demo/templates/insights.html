@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinConnectAI - Customer Insights</title>
+    <link rel="icon" href="/static/images/favicon.ico" type="image/x-icon">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-navy: #0D2E4D;
+            --primary-teal: #008F7A;
+            --secondary-teal-light: #00BFA5;
+            --accent-gray: #F5F7FA;
+            --text-dark: #1A2B3C;
+            --text-light: #6C7A89;
+            --success: #00BFA5;
+            --warning: #FFC107;
+            --danger: #FF5252;
+        }
+        
+        body {
+            font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding-top: 20px;
+            color: var(--text-dark);
+            background-color: var(--accent-gray);
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+        }
+        
+        .navbar-brand span.connect {
+            color: var(--primary-teal);
+        }
+        
+        .navbar-brand span.fin, .navbar-brand span.ai {
+            color: var(--primary-navy);
+        }
+        
+        .card {
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            border: none;
+            border-radius: 8px;
+        }
+        
+        .card-header {
+            font-weight: 600;
+            background-color: white;
+            border-bottom: 2px solid var(--accent-gray);
+            padding: 15px 20px;
+            border-radius: 8px 8px 0 0 !important;
+        }
+        
+        .result-card {
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .insight-item {
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--primary-teal);
+            background-color: rgba(0, 143, 122, 0.05);
+            border-radius: 0 8px 8px 0;
+            background-color: #f8f9fa;
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo-img {
+            height: 40px;
+            width: auto;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-teal);
+            border-color: var(--primary-teal);
+        }
+        
+        .btn-primary:hover, .btn-primary:focus {
+            background-color: var(--secondary-teal-light);
+            border-color: var(--secondary-teal-light);
+        }
+        
+        .nav-link.active {
+            color: var(--primary-teal) !important;
+            font-weight: 600;
+        }
+        .chart-container {
+            height: 300px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="pb-3 mb-4 border-bottom">
+            <div class="d-flex align-items-center text-decoration-none">
+                <a href="/" class="text-decoration-none d-flex align-items-center">
+                    <div class="logo-container">
+                        <img src="/static/images/finconnect_logo.png" alt="FinConnectAI Logo" class="logo-img">
+                        <div class="navbar-brand fs-4">
+                            <span class="fin">Fin</span><span class="connect">Connect</span><span class="ai">AI</span>
+                        </div>
+                    </div>
+                </a>
+                <span class="badge ms-2" style="background-color: var(--primary-teal);">Customer Insights</span>
+            </div>
+        </header>
+        
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-header">Navigation</div>
+                    <div class="card-body">
+                        <div class="list-group">
+                            <a href="/" class="list-group-item list-group-item-action">Dashboard</a>
+                            <a href="/fraud" class="list-group-item list-group-item-action">Fraud Detection</a>
+                            <a href="/kyc" class="list-group-item list-group-item-action">KYC Verification</a>
+                            <a href="/compliance" class="list-group-item list-group-item-action">Compliance Checks</a>
+                            <a href="/insights" class="list-group-item list-group-item-action active">Customer Insights</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card mt-3">
+                    <div class="card-header">System Status</div>
+                    <div class="card-body">
+                        <p class="mb-1"><span class="badge bg-success">Online</span> Fraud Agent</p>
+                        <p class="mb-1"><span class="badge bg-success">Online</span> KYC Agent</p>
+                        <p class="mb-1"><span class="badge bg-success">Online</span> Compliance Checker</p>
+                        <p class="mb-0"><span class="badge bg-success">Online</span> Insight Agent</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="col-md-9">
+                <div class="card">
+                    <div class="card-header">Customer Insights Generator</div>
+                    <div class="card-body">
+                        <p>Generate actionable insights from customer data using advanced analytics.</p>
+                        
+                        <form action="/insights" method="post">
+                            <div class="row mb-3">
+                                <div class="col-md-12">
+                                    <h5>Analysis Parameters</h5>
+                                </div>
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="customer_segment">Customer Segment</label>
+                                        <select class="form-select" id="customer_segment" name="customer_segment">
+                                            {% for segment in segments %}
+                                            <option value="{{ segment }}" {% if segment == customer_segment %}selected{% endif %}>{{ segment }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="time_period">Time Period</label>
+                                        <select class="form-select" id="time_period" name="time_period">
+                                            {% for period in time_periods %}
+                                            <option value="{{ period }}" {% if period == time_period %}selected{% endif %}>{{ period }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="analysis_type">Analysis Type</label>
+                                        <select class="form-select" id="analysis_type" name="analysis_type">
+                                            {% for type in analysis_types %}
+                                            <option value="{{ type }}" {% if type == analysis_type %}selected{% endif %}>{{ type }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="region">Region</label>
+                                        <select class="form-select" id="region" name="region">
+                                            {% for r in regions %}
+                                            <option value="{{ r }}" {% if r == region %}selected{% endif %}>{{ r }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="query">Natural Language Query (Optional)</label>
+                                        <input type="text" class="form-control" id="query" name="query" value="{{ query }}" placeholder="E.g., What drives customer churn in India?">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <button type="submit" class="btn btn-primary" style="background-color: var(--primary-teal); border-color: var(--primary-teal);">Generate Insights</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                {% if result %}
+                <div class="card result-card">
+                    <div class="card-header">Analysis Results</div>
+                    <div class="card-body">
+                        <div class="row mb-4">
+                            <div class="col-md-12">
+                                <h5>Analysis Parameters</h5>
+                                <table class="table table-bordered">
+                                    <tr>
+                                        <th>Customer Segment</th>
+                                        <td>{{ result.customer_segment }}</td>
+                                        <th>Time Period</th>
+                                        <td>{{ result.time_period }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Analysis Type</th>
+                                        <td>{{ result.analysis_type }}</td>
+                                        <th>Region</th>
+                                        <td>{{ result.region }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Timestamp</th>
+                                        <td>{{ result.timestamp }}</td>
+                                        <th>Currency</th>
+                                        <td>{{ result.currency }} ({{ result.currency_name }})</td>
+                                    </tr>
+                                    {% if result.query %}
+                                    <tr>
+                                        <th>Query</th>
+                                        <td colspan="3">{{ result.query }}</td>
+                                    </tr>
+                                    {% endif %}
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-4">
+                            <div class="col-md-12">
+                                <h5>Key Insights</h5>
+                                {% for insight in result.insights %}
+                                <div class="insight-item">{{ insight }}</div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h5>Visualizations</h5>
+                            </div>
+                            
+                            {% if result.analysis_type == "Spending Patterns" %}
+                            <div class="col-md-6">
+                                <div class="chart-container">
+                                    <canvas id="spendingByCategory"></canvas>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="chart-container">
+                                    <canvas id="spendingTrend"></canvas>
+                                </div>
+                            </div>
+                            {% elif result.analysis_type == "Demographic Analysis" %}
+                            <div class="col-md-6">
+                                <div class="chart-container">
+                                    <canvas id="ageDistribution"></canvas>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="chart-container">
+                                    <canvas id="locationDistribution"></canvas>
+                                </div>
+                            </div>
+                            {% elif result.analysis_type == "Churn Prediction" %}
+                            <div class="col-md-6">
+                                <div class="chart-container">
+                                    <canvas id="churnFactors"></canvas>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="chart-container">
+                                    <canvas id="churnPrediction"></canvas>
+                                </div>
+                            </div>
+                            {% elif result.analysis_type == "Lifetime Value" %}
+                            <div class="col-md-6">
+                                <div class="chart-container">
+                                    <canvas id="ltvByChannel"></canvas>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="chart-container">
+                                    <canvas id="ltvGrowth"></canvas>
+                                </div>
+                            </div>
+                            {% elif result.analysis_type == "Product Affinity" %}
+                            <div class="col-md-6">
+                                <div class="chart-container">
+                                    <canvas id="productCombinations"></canvas>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="chart-container">
+                                    <canvas id="recommendationImpact"></canvas>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        {% if result %}
+                        <!-- Store chart data in hidden elements to avoid JavaScript lint errors with Jinja2 templates -->
+                        {% if result.analysis_type == "Spending Patterns" %}
+                        <div id="chartData" style="display:none;" 
+                            data-chart-type="spending-patterns"
+                            data-category-labels='{{ result.charts.spending_by_category.categories|tojson|safe }}'
+                            data-category-values='{{ result.charts.spending_by_category.values|tojson|safe }}'
+                            data-trend-labels='{{ result.charts.spending_trend.months|tojson|safe }}'
+                            data-trend-values='{{ result.charts.spending_trend.values|tojson|safe }}'>
+                        </div>
+                        {% elif result.analysis_type == "Demographic Analysis" %}
+                        <div id="chartData" style="display:none;" 
+                            data-chart-type="demographic-analysis"
+                            data-age-labels='{{ result.charts.age_distribution.groups|tojson|safe }}'
+                            data-age-values='{{ result.charts.age_distribution.values|tojson|safe }}'
+                            data-location-labels='{{ result.charts.location_distribution.regions|tojson|safe }}'
+                            data-location-values='{{ result.charts.location_distribution.values|tojson|safe }}'>
+                        </div>
+                        {% elif result.analysis_type == "Churn Prediction" %}
+                        <div id="chartData" style="display:none;" 
+                            data-chart-type="churn-prediction"
+                            data-factor-labels='{{ result.charts.churn_factors.factors|tojson|safe }}'
+                            data-factor-values='{{ result.charts.churn_factors.values|tojson|safe }}'
+                            data-segment-labels='{{ result.charts.churn_prediction.segments|tojson|safe }}'
+                            data-segment-values='{{ result.charts.churn_prediction.values|tojson|safe }}'>
+                        </div>
+                        {% elif result.analysis_type == "Lifetime Value" %}
+                        <div id="chartData" style="display:none;" 
+                            data-chart-type="lifetime-value"
+                            data-channel-labels='{{ result.charts.ltv_by_channel.channels|tojson|safe }}'
+                            data-channel-values='{{ result.charts.ltv_by_channel.values|tojson|safe }}'
+                            data-year-labels='{{ result.charts.ltv_growth.years|tojson|safe }}'
+                            data-year-values='{{ result.charts.ltv_growth.values|tojson|safe }}'>
+                        </div>
+                        {% elif result.analysis_type == "Product Affinity" %}
+                        <div id="chartData" style="display:none;" 
+                            data-chart-type="product-affinity"
+                            data-pair-labels='{{ result.charts.product_combinations.pairs|tojson|safe }}'
+                            data-pair-values='{{ result.charts.product_combinations.values|tojson|safe }}'
+                            data-metric-labels='{{ result.charts.recommendation_impact.metrics|tojson|safe }}'
+                            data-metric-values='{{ result.charts.recommendation_impact.values|tojson|safe }}'>
+                        </div>
+                        {% endif %}
+                        
+                        <script>
+                            // Pure JavaScript code with no Jinja2 template syntax
+                            (function() {
+                                document.addEventListener('DOMContentLoaded', function() {
+                                    // Get data from HTML data attributes
+                                    const chartData = document.getElementById('chartData');
+                                    if (!chartData) return;
+                                    
+                                    const chartType = chartData.getAttribute('data-chart-type');
+                                    
+                                    // Render appropriate charts based on chart type
+                                    if (chartType === 'spending-patterns') {
+                                        const categoryLabels = JSON.parse(chartData.getAttribute('data-category-labels'));
+                                        const categoryValues = JSON.parse(chartData.getAttribute('data-category-values'));
+                                        const trendLabels = JSON.parse(chartData.getAttribute('data-trend-labels'));
+                                        const trendValues = JSON.parse(chartData.getAttribute('data-trend-values'));
+                                        
+                                        renderPieChart('spendingByCategory', categoryLabels, categoryValues, 'Spending by Category (%)');
+                                        renderLineChart('spendingTrend', trendLabels, trendValues, 'Monthly Spending Trend', 'Average Spending ($)');
+                                    } 
+                                    else if (chartType === 'demographic-analysis') {
+                                        const ageLabels = JSON.parse(chartData.getAttribute('data-age-labels'));
+                                        const ageValues = JSON.parse(chartData.getAttribute('data-age-values'));
+                                        const locationLabels = JSON.parse(chartData.getAttribute('data-location-labels'));
+                                        const locationValues = JSON.parse(chartData.getAttribute('data-location-values'));
+                                        
+                                        renderBarChart('ageDistribution', ageLabels, ageValues, 'Customer Age Distribution', 'Distribution (%)');
+                                        renderPieChart('locationDistribution', locationLabels, locationValues, 'Customer Location Distribution (%)');
+                                    }
+                                    else if (chartType === 'churn-prediction') {
+                                        const factorLabels = JSON.parse(chartData.getAttribute('data-factor-labels'));
+                                        const factorValues = JSON.parse(chartData.getAttribute('data-factor-values'));
+                                        const segmentLabels = JSON.parse(chartData.getAttribute('data-segment-labels'));
+                                        const segmentValues = JSON.parse(chartData.getAttribute('data-segment-values'));
+                                        
+                                        renderBarChart('churnFactors', factorLabels, factorValues, 'Churn Factors by Impact', 'Impact (%)', '#e74a3b');
+                                        renderDoughnutChart('churnPrediction', segmentLabels, segmentValues, 'Churn Risk Segments (%)');
+                                    }
+                                    else if (chartType === 'lifetime-value') {
+                                        const channelLabels = JSON.parse(chartData.getAttribute('data-channel-labels'));
+                                        const channelValues = JSON.parse(chartData.getAttribute('data-channel-values'));
+                                        const yearLabels = JSON.parse(chartData.getAttribute('data-year-labels'));
+                                        const yearValues = JSON.parse(chartData.getAttribute('data-year-values'));
+                                        
+                                        renderBarChart('ltvByChannel', channelLabels, channelValues, 'Customer LTV by Acquisition Channel', 'LTV ($)');
+                                        renderLineChart('ltvGrowth', yearLabels, yearValues, 'Customer LTV Growth Over Time', 'LTV ($)', '#1cc88a');
+                                    }
+                                    else if (chartType === 'product-affinity') {
+                                        const pairLabels = JSON.parse(chartData.getAttribute('data-pair-labels'));
+                                        const pairValues = JSON.parse(chartData.getAttribute('data-pair-values'));
+                                        const metricLabels = JSON.parse(chartData.getAttribute('data-metric-labels'));
+                                        const metricValues = JSON.parse(chartData.getAttribute('data-metric-values'));
+                                        
+                                        renderBarChart('productCombinations', pairLabels, pairValues, 'Top Product Combinations', 'Co-purchase Rate (%)');
+                                        renderRadarChart('recommendationImpact', metricLabels, metricValues, 'Recommendation Engine Impact');
+                                    }
+                                });
+                                
+                                // Helper functions for chart rendering
+                                function renderPieChart(elementId, labels, values, title) {
+                                    new Chart(document.getElementById(elementId), {
+                                        type: 'pie',
+                                        data: {
+                                            labels: labels,
+                                            datasets: [{
+                                                data: values,
+                                                backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b']
+                                            }]
+                                        },
+                                        options: {
+                                            responsive: true,
+                                            maintainAspectRatio: false,
+                                            plugins: {
+                                                title: {
+                                                    display: true,
+                                                    text: title
+                                                }
+                                            }
+                                        }
+                                    });
+                                }
+                                
+                                function renderBarChart(elementId, labels, values, title, label, color) {
+                                    if (!color) color = '#4e73df';
+                                    new Chart(document.getElementById(elementId), {
+                                        type: 'bar',
+                                        data: {
+                                            labels: labels,
+                                            datasets: [{
+                                                label: label,
+                                                data: values,
+                                                backgroundColor: color
+                                            }]
+                                        },
+                                        options: {
+                                            responsive: true,
+                                            maintainAspectRatio: false,
+                                            plugins: {
+                                                title: {
+                                                    display: true,
+                                                    text: title
+                                                }
+                                            }
+                                        }
+                                    });
+                                }
+                                
+                                function renderLineChart(elementId, labels, values, title, label, color) {
+                                    if (!color) color = '#4e73df';
+                                    new Chart(document.getElementById(elementId), {
+                                        type: 'line',
+                                        data: {
+                                            labels: labels,
+                                            datasets: [{
+                                                label: label,
+                                                data: values,
+                                                borderColor: color,
+                                                tension: 0.1,
+                                                fill: false
+                                            }]
+                                        },
+                                        options: {
+                                            responsive: true,
+                                            maintainAspectRatio: false,
+                                            plugins: {
+                                                title: {
+                                                    display: true,
+                                                    text: title
+                                                }
+                                            }
+                                        }
+                                    });
+                                }
+                                
+                                function renderDoughnutChart(elementId, labels, values, title) {
+                                    new Chart(document.getElementById(elementId), {
+                                        type: 'doughnut',
+                                        data: {
+                                            labels: labels,
+                                            datasets: [{
+                                                data: values,
+                                                backgroundColor: ['#1cc88a', '#f6c23e', '#e74a3b']
+                                            }]
+                                        },
+                                        options: {
+                                            responsive: true,
+                                            maintainAspectRatio: false,
+                                            plugins: {
+                                                title: {
+                                                    display: true,
+                                                    text: title
+                                                }
+                                            }
+                                        }
+                                    });
+                                }
+                                
+                                function renderRadarChart(elementId, labels, values, title) {
+                                    new Chart(document.getElementById(elementId), {
+                                        type: 'radar',
+                                        data: {
+                                            labels: labels,
+                                            datasets: [{
+                                                label: 'Impact (%)',
+                                                data: values,
+                                                backgroundColor: 'rgba(78, 115, 223, 0.2)',
+                                                borderColor: '#4e73df',
+                                                pointBackgroundColor: '#4e73df'
+                                            }]
+                                        },
+                                        options: {
+                                            responsive: true,
+                                            maintainAspectRatio: false,
+                                            plugins: {
+                                                title: {
+                                                    display: true,
+                                                    text: title
+                                                }
+                                            }
+                                        }
+                                    });
+                                }
+                            })();
+                        </script>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+                
+                <div class="card">
+                    <div class="card-header">Recent Insight Requests</div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Timestamp</th>
+                                        <th>Segment</th>
+                                        <th>Time Period</th>
+                                        <th>Analysis Type</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in history %}
+                                    <tr>
+                                        <td>{{ item.timestamp }}</td>
+                                        <td>{{ item.customer_segment }}</td>
+                                        <td>{{ item.time_period }}</td>
+                                        <td>{{ item.analysis_type }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <footer class="pt-3 mt-4 text-muted border-top">
+            <div class="row">
+                <div class="col-md-6">
+                    &copy; 2025 FinConnectAI
+                </div>
+                <div class="col-md-6 text-end">
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#disclaimerModal">Disclaimer</a>
+                </div>
+            </div>
+        </footer>
+    </div>
+    
+    <!-- Disclaimer Modal -->
+    <div class="modal fade" id="disclaimerModal" tabindex="-1" aria-labelledby="disclaimerModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="disclaimerModalLabel">Demo Disclaimer</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>This is a demonstration interface for the FinConnectAI system. All data shown is simulated and does not represent real customers or transactions.</p>
+                    <p>The system demonstrates capabilities in:</p>
+                    <ul>
+                        <li>KYC verification and identity checks</li>
+                        <li>Fraud detection and risk assessment</li>
+                        <li>Regulatory compliance verification</li>
+                        <li>Customer insights and analytics</li>
+                    </ul>
+                    <p>For more information, please contact the development team.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

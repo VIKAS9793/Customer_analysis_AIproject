@@ -1,0 +1,34 @@
+encryption:
+  key_size: ${BUSINESS_ENCRYPTION_KEY_SIZE}
+  algorithm: 
+  key_rotation_days: ${BUSINESS_ENCRYPTION_ROTATION_DAYS}
+  key_storage: ${BUSINESS_KEY_STORAGE}
+  key_management:
+    provider: HSM
+    key_types:
+      - ${BUSINESS_ENCRYPTION_TYPE_1}
+      - ${BUSINESS_ENCRYPTION_TYPE_2}
+      - ${BUSINESS_ENCRYPTION_TYPE_3}
+    key_sizes:
+      ${BUSINESS_ENCRYPTION_TYPE_1}: ${BUSINESS_KEY_SIZE_1}
+      ${BUSINESS_ENCRYPTION_TYPE_2}: ${BUSINESS_KEY_SIZE_2}
+      ${BUSINESS_ENCRYPTION_TYPE_3}: ${BUSINESS_KEY_SIZE_3}
+      AES: 256
+  crypto_algorithms:
+    signing:
+      - RSA-PSS
+      - ECDSA
+    encryption:
+      - AES-256-GCM
+      - RSA-OAEP
+    hashing:
+      - SHA-384
+      - SHA-512
+  key_rotation:
+    interval: 90
+    grace_period: 7
+    backup_retention: 365
+  audit:
+    enabled: true
+    log_level: INFO
+    retention_days: 365

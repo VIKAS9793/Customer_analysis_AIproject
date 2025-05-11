@@ -1,0 +1,161 @@
+system:
+  environment: development
+  log_level: INFO
+  model:
+    provider: anthropic
+    model: claude-3.7-sonnet
+    max_tokens: 1000000
+    temperature: 0.2
+    api_key_env: FINCONNECTAI_API_KEY
+
+  model_backup:
+    provider: openai
+    model: gpt-4.5
+    max_tokens: 1000000
+    temperature: 0.2
+    api_key_env: OPENAI_API_KEY
+
+audit:
+  enabled: true
+  frequency:
+    daily: true
+    weekly_summary: true
+    monthly_report: true
+  log_path: audit.log
+  retention_days: 365
+  rotation:
+    max_size: 100MB
+    max_files: 10
+  format: json
+  fields:
+    - timestamp
+    - event_type
+    - user_id
+    - action
+    - status
+    - risk_score
+    - confidence
+    - review_required
+
+security:
+  encryption:
+    enabled: true
+    key_rotation: 90
+    algorithm: AES-256
+  pii_masking: true
+  audit_trail: true
+  api_key_env: FINCONNECTAI_API_KEY
+  encryption_enabled: true
+
+models:
+  fraud_detection:
+    primary_model: gpt-4.5
+    backup_model: claude-3.7-sonnet
+    temperature: 0.2
+    max_tokens: 1000000
+    risk_threshold: 0.7
+    transaction_threshold: 1000
+    context_window: 1000000
+    hallucination_reduction: true
+    explainability_required: true
+    review_required: true
+  kyc_verification:
+    primary_model: gpt-4.5
+    backup_model: claude-3.7-sonnet
+    temperature: 0.3
+    max_tokens: 1000000
+    confidence_threshold: 0.92
+    verification_level: enhanced
+    context_window: 1000000
+    hallucination_reduction: true
+    explainability_required: true
+    review_required: true
+
+feedback:
+  enabled: true
+  collection_interval: 60
+  retention_days: 90
+  review_threshold: 0.7
+  review_required_threshold: 0.8
+  max_pending_reviews: 50
+  feedback_logging:
+    feedback_type: human_override
+    action_taken: Flagged for Review
+    timestamp: "2025-05-08T17:00:00Z"
+
+monitoring:
+  enabled: true
+  metrics_interval: 60
+  alert_thresholds:
+    error_rate: 0.01
+    response_time: 2.0
+    false_positive_rate: 0.05
+    false_negative_rate: 0.02
+
+agents:
+  fraud:
+    risk_threshold: 0.7
+    transaction_threshold: 1000
+  kyc:
+    verification_level: standard
+    document_check: true
+  audit:
+    retention_period: 90
+    audit_frequency: daily
+      explanation: Unusual transaction for a new account
+      recommended_action: Send to human review
+      timestamp: "2025-05-08T14:45:00Z"
+  
+  kyc:
+    verification_level: standard
+    document_check: true
+    additional_checks: [ID_proof, address_proof]
+    manual_review: true
+    output_format:
+      decision: PASS
+      confidence: 0.92
+      explanation: Verified with valid government-issued ID
+      recommended_action: Approve KYC
+      timestamp: "2025-05-08T15:00:00Z"
+  
+  audit:
+    retention_period: 90
+    audit_frequency: daily
+    output_format:
+      action_taken: Review
+      timestamp: "2025-05-08T16:00:00Z"
+      reviewer_id: user_1234
+      decision: Flagged for further review
+  
+memory:
+  database: finconnectai.db
+  max_history: 1000
+  retention_days: 365
+  schema:
+    decision: TEXT
+    confidence: FLOAT
+    action_taken: TEXT
+    timestamp: TEXT
+    reviewer_id: TEXT
+  
+security:
+  api_key_env: FINCONNECTAI_API_KEY
+  encryption_enabled: true
+  
+monitoring:
+  enabled: true
+  metrics_interval: 60
+  alert_thresholds:
+    error_rate: 0.01
+    response_time: 2.0
+    false_positive_rate: 0.05
+    false_negative_rate: 0.02
+  
+feedback:
+  enabled: true
+  review_required_threshold: 0.8
+  max_pending_reviews: 50
+  feedback_logging:
+    feedback_type: human_override
+    action_taken: Flagged for Review
+    timestamp: "2025-05-08T17:00:00Z"

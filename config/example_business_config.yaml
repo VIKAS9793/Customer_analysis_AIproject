@@ -1,0 +1,73 @@
+# Example Business Configuration
+# Note: This is a template. Businesses MUST customize all values according to their requirements
+
+# Performance Optimization Settings
+performance:
+  cache_settings:
+    enabled: true
+    provider: "redis"
+    ttl: "1h"
+    max_size: "1GB"
+  rate_limits:
+    api:
+      window: "1m"
+      limit: 1000
+    batch:
+      window: "10m"
+      limit: 10000
+  batch_processing:
+    max_size: 1000
+    timeout: "30s"
+  queue_sizes:
+    processing: 10000
+    audit: 5000
+    error: 1000
+
+# Monitoring Configuration
+monitoring:
+  metrics:
+    collection_interval: "1m"
+    retention: "7d"
+  alerts:
+    thresholds:
+      error_rate: 0.01
+      latency_95th: "500ms"
+      queue_size: 80
+  service_mesh:
+    enabled: true
+    provider: "istio"
+  tracing:
+    enabled: true
+    provider: "jaeger"
+    sample_rate: 0.1
+
+# Security Enhancements
+security:
+  input_validation:
+    max_length: 1024
+    allowed_chars: "alphanumeric"
+  audit_trail:
+    retention: "1y"
+    sampling_rate: 1.0
+  security_testing:
+    enabled: true
+    interval: "1d"
+  secrets_management:
+    # Business must configure their own secrets management
+    provider: ${BUSINESS_SECRETS_PROVIDER}
+    path: ${BUSINESS_SECRETS_PATH}
+
+# Business-specific Customization Examples
+examples:
+  performance:
+    - "High volume transaction processing"
+    - "Real-time fraud detection"
+    - "Batch processing optimization"
+  monitoring:
+    - "Distributed tracing setup"
+    - "Service mesh configuration"
+    - "Custom alert thresholds"
+  security:
+    - "Input validation patterns"
+    - "Audit trail configuration"
+    - "Secrets management integration"

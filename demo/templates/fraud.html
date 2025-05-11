@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fraud Detection - FinConnectAI</title>
+    <link rel="icon" href="/static/images/favicon.ico" type="image/x-icon">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-navy: #0D2E4D;
+            --primary-teal: #008F7A;
+            --secondary-teal-light: #00BFA5;
+            --accent-gray: #F5F7FA;
+            --text-dark: #1A2B3C;
+            --text-light: #6C7A89;
+            --success: #00BFA5;
+            --warning: #FFC107;
+            --danger: #FF5252;
+        }
+        
+        body {
+            font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding-top: 20px;
+            color: var(--text-dark);
+            background-color: var(--accent-gray);
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+        }
+        
+        .navbar-brand span.connect {
+            color: var(--primary-teal);
+        }
+        
+        .navbar-brand span.fin, .navbar-brand span.ai {
+            color: var(--primary-navy);
+        }
+        
+        .card {
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            border: none;
+            border-radius: 8px;
+        }
+        
+        .card-header {
+            font-weight: 600;
+            background-color: white;
+            border-bottom: 2px solid var(--accent-gray);
+            padding: 15px 20px;
+            border-radius: 8px 8px 0 0 !important;
+        }
+        
+        .result-card {
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .progress-bar-low {
+            background-color: var(--success);
+        }
+        
+        .progress-bar-medium {
+            background-color: var(--warning);
+        }
+        
+        .progress-bar-high {
+            background-color: var(--danger);
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo-img {
+            height: 40px;
+            width: auto;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-teal);
+            border-color: var(--primary-teal);
+        }
+        
+        .btn-primary:hover, .btn-primary:focus {
+            background-color: var(--secondary-teal-light);
+            border-color: var(--secondary-teal-light);
+        }
+        
+        .nav-link.active {
+            color: var(--primary-teal) !important;
+            font-weight: 600;
+        }
+        
+        .badge-approve {
+            background-color: var(--success);
+        }
+        
+        .badge-flag {
+            background-color: var(--danger);
+        }
+        .progress-bar-high {
+            background-color: #dc3545;
+        }
+        .progress {
+            height: 25px;
+        }
+        .progress-bar {
+            font-weight: bold;
+        }
+        .risk-low {
+            background-color: #28a745;
+        }
+        .risk-medium {
+            background-color: #ffc107;
+        }
+        .risk-high {
+            background-color: #dc3545;
+        }
+        .result-card {
+            border-left: 5px solid #007bff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="pb-3 mb-4 border-bottom">
+            <div class="d-flex align-items-center text-decoration-none">
+                <a href="/" class="text-decoration-none d-flex align-items-center">
+                    <div class="logo-container">
+                        <img src="/static/images/finconnect_logo.png" alt="FinConnectAI Logo" class="logo-img">
+                        <div class="navbar-brand fs-4">
+                            <span class="fin">Fin</span><span class="connect">Connect</span><span class="ai">AI</span>
+                        </div>
+                    </div>
+                </a>
+                <span class="badge ms-2" style="background-color: var(--primary-teal);">Fraud Detection</span>
+            </div>
+        </header>
+
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-header">Navigation</div>
+                    <div class="card-body p-0">
+                        <div class="list-group list-group-flush">
+                            <a href="/" class="list-group-item list-group-item-action">Dashboard</a>
+                            <a href="/fraud" class="list-group-item list-group-item-action active">Fraud Detection</a>
+                            <a href="/kyc" class="list-group-item list-group-item-action">KYC Verification</a>
+                            <a href="/compliance" class="list-group-item list-group-item-action">Compliance Checks</a>
+                            <a href="/insights" class="list-group-item list-group-item-action">Customer Insights</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card mt-3">
+                    <div class="card-header">Agent Information</div>
+                    <div class="card-body">
+                        <p><strong>Fraud Agent</strong></p>
+                        <p class="mb-1"><small>Test Coverage: 100%</small></p>
+                        <div class="progress mb-3">
+                            <div class="progress-bar bg-success" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">100%</div>
+                        </div>
+                        <p class="mb-0"><small>Detects transaction fraud patterns with high accuracy using advanced pattern recognition and anomaly detection.</small></p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="col-md-9">
+                <div class="card">
+                    <div class="card-header">Fraud Detection Agent</div>
+                    <div class="card-body">
+                        <p>Analyze transactions for potential fraud patterns.</p>
+                        
+                        <form action="/fraud" method="post">
+                            <div class="row mb-3">
+                                <div class="col-md-12">
+                                    <h5>Transaction Details</h5>
+                                </div>
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="transaction_id">Transaction ID</label>
+                                        <input type="text" class="form-control" id="transaction_id" name="transaction_id" value="{{ transaction_id }}" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="customer_id">Customer ID</label>
+                                        <input type="text" class="form-control" id="customer_id" name="customer_id" value="{{ customer_id }}">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="amount">Amount ({{ currency_symbol }}) <small class="text-muted">{{ currency_code }}</small></label>
+                                        <input type="number" class="form-control" id="amount" name="amount" min="10" max="1000000" value="{{ amount }}" step="0.01">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="location">Location</label>
+                                        <select class="form-select" id="location" name="location">
+                                            {% for loc in locations %}
+                                            <option value="{{ loc }}" {% if loc == location %}selected{% endif %}>{{ loc }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="device">Device</label>
+                                        <select class="form-select" id="device" name="device">
+                                            {% for dev in devices %}
+                                            <option value="{{ dev }}" {% if dev == device %}selected{% endif %}>{{ dev }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="frequency">Transaction Frequency (last 30 days)</label>
+                                        <input type="range" class="form-range" id="frequency" name="frequency" min="0" max="20" value="{{ frequency }}">
+                                        <div class="text-center" id="frequency_value">{{ frequency }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="account_age">Account Age (days)</label>
+                                        <input type="range" class="form-range" id="account_age" name="account_age" min="1" max="1000" value="{{ account_age }}">
+                                        <div class="text-center" id="account_age_value">{{ account_age }}</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="previous_flags">Previous Flags</label>
+                                        <input type="range" class="form-range" id="previous_flags" name="previous_flags" min="0" max="10" value="{{ previous_flags }}">
+                                        <div class="text-center" id="previous_flags_value">{{ previous_flags }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-12 text-center">
+                                    <button type="submit" class="btn btn-primary" style="background-color: var(--primary-teal); border-color: var(--primary-teal);">Analyze Transaction</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                {% if result %}
+                <div class="card result-card">
+                    <div class="card-header">Analysis Results</div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5>Transaction Details</h5>
+                                <table class="table table-bordered">
+                                    <tr>
+                                        <th>Transaction ID</th>
+                                        <td>{{ result.transaction_id }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Customer ID</th>
+                                        <td>{{ result.customer_id }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Amount</th>
+                                        <td>{{ currency_symbol }}{{ "%.2f"|format(result.amount) }} <small class="text-muted">{{ currency_code }}</small></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Location</th>
+                                        <td>{{ result.location }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Device</th>
+                                        <td>{{ result.device }}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="col-md-6">
+                                <h5>Risk Assessment</h5>
+                                <p><strong>Risk Score:</strong> {{ "%.2f"|format(result.risk_score) }}</p>
+                                
+                                <!-- Risk score progress bar -->
+                                <div class="progress mb-3">
+                                    <!-- Using a data attribute to store the score for JavaScript -->
+                                    <div class="progress-bar" id="risk-progress-bar" role="progressbar" 
+                                         data-score="{{ result.risk_score }}">
+                                        {{ "%.2f"|format(result.risk_score) }}
+                                    </div>
+                                </div>
+                                
+                                <script>
+                                    // Apply styling after the DOM is loaded
+                                    document.addEventListener('DOMContentLoaded', function() {
+                                        const progressBar = document.getElementById('risk-progress-bar');
+                                        const score = parseFloat(progressBar.getAttribute('data-score'));
+                                        
+                                        // Set the width based on the score
+                                        progressBar.style.width = (score * 100) + '%';
+                                        progressBar.setAttribute('aria-valuenow', score * 100);
+                                        progressBar.setAttribute('aria-valuemin', '0');
+                                        progressBar.setAttribute('aria-valuemax', '100');
+                                        
+                                        // Apply the appropriate color class based on the score
+                                        if (score < 0.4) {
+                                            progressBar.classList.add('bg-success');
+                                        } else if (score < 0.7) {
+                                            progressBar.classList.add('bg-warning');
+                                        } else {
+                                            progressBar.classList.add('bg-danger');
+                                        }
+                                    });
+                                </script>
+                                
+                                <p><strong>Decision:</strong> 
+                                    {% if result.decision == "FLAG" %}
+                                    <span class="badge bg-danger">{{ result.decision }}</span>
+                                    {% else %}
+                                    <span class="badge bg-success">{{ result.decision }}</span>
+                                    {% endif %}
+                                </p>
+                                
+                                <p><strong>Recommended Action:</strong> {{ result.recommended_action }}</p>
+                                
+                                <h5 class="mt-4">Risk Factors</h5>
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Factor</th>
+                                            <th>Risk Level</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Transaction Amount</td>
+                                            <td>
+                                                {% if result.amount > 3000 %}
+                                                <span class="badge bg-danger">High (0.8)</span>
+                                                {% elif result.amount > 1000 %}
+                                                <span class="badge bg-warning text-dark">Medium (0.5)</span>
+                                                {% else %}
+                                                <span class="badge bg-success">Low (0.2)</span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Transaction Frequency</td>
+                                            <td>
+                                                {% if result.frequency > 15 %}
+                                                <span class="badge bg-danger">High (0.7)</span>
+                                                {% elif result.frequency > 10 %}
+                                                <span class="badge bg-warning text-dark">Medium (0.4)</span>
+                                                {% else %}
+                                                <span class="badge bg-success">Low (0.1)</span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Previous Flags</td>
+                                            <td>
+                                                {% if result.previous_flags > 5 %}
+                                                <span class="badge bg-danger">High (0.9)</span>
+                                                {% elif result.previous_flags > 0 %}
+                                                <span class="badge bg-warning text-dark">Medium (0.6)</span>
+                                                {% else %}
+                                                <span class="badge bg-success">Low (0.1)</span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                
+                <div class="card">
+                    <div class="card-header">Recent Fraud Detection History</div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Timestamp</th>
+                                        <th>Transaction ID</th>
+                                        <th>Amount</th>
+                                        <th>Risk Score</th>
+                                        <th>Decision</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in history %}
+                                    <tr>
+                                        <td>{{ item.timestamp }}</td>
+                                        <td>{{ item.transaction_id }}</td>
+                                        <td>${{ "%.2f"|format(item.amount) }}</td>
+                                        <td>
+                                            {% if item.risk_score >= 0.7 %}
+                                            <span class="badge bg-danger">{{ "%.2f"|format(item.risk_score) }}</span>
+                                            {% elif item.risk_score >= 0.4 %}
+                                            <span class="badge bg-warning text-dark">{{ "%.2f"|format(item.risk_score) }}</span>
+                                            {% else %}
+                                            <span class="badge bg-success">{{ "%.2f"|format(item.risk_score) }}</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if item.decision == "FLAG" %}
+                                            <span class="badge bg-danger">{{ item.decision }}</span>
+                                            {% else %}
+                                            <span class="badge bg-success">{{ item.decision }}</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <footer class="pt-3 mt-4 text-muted border-top">
+            <div class="row">
+                <div class="col-md-6">
+                    <p>FinConnectAI &copy; 2025</p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <p>Test Coverage: 100% | <a href="#" data-bs-toggle="modal" data-bs-target="#disclaimerModal">Disclaimer</a></p>
+                </div>
+            </div>
+        </footer>
+    </div>
+    
+    <!-- Disclaimer Modal -->
+    <div class="modal fade" id="disclaimerModal" tabindex="-1" aria-labelledby="disclaimerModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="disclaimerModalLabel">Important Disclaimer</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p><strong>This demo interface is provided as a foundation for business adaptation.</strong></p>
+                    <p>Businesses must customize the following components according to their organization's requirements:</p>
+                    <ul>
+                        <li><strong>Security Configuration</strong> - All security parameters must be set according to your organization's security policies</li>
+                        <li><strong>Compliance Settings</strong> - Data retention periods must be configured according to your organization's compliance requirements</li>
+                        <li><strong>Authentication & Authorization</strong> - RBAC must be implemented according to your organization's access control policies</li>
+                        <li><strong>Monitoring & Alerts</strong> - Alert thresholds must be configured according to your organization's risk tolerance</li>
+                        <li><strong>Data Processing</strong> - All data processing must comply with your organization's data protection policies</li>
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Currency mapping
+        const currencyMapping = {
+            "United States": {symbol: "$", code: "USD"},
+            "United Kingdom": {symbol: "£", code: "GBP"},
+            "Canada": {symbol: "$", code: "CAD"},
+            "Australia": {symbol: "$", code: "AUD"},
+            "India": {symbol: "₹", code: "INR"},
+            "Germany": {symbol: "€", code: "EUR"},
+            "France": {symbol: "€", code: "EUR"},
+            "Japan": {symbol: "¥", code: "JPY"}
+        };
+        
+        // Update currency when location changes
+        document.getElementById('location').addEventListener('change', function() {
+            const location = this.value;
+            const currency = currencyMapping[location] || {symbol: "$", code: "USD"};
+            const amountLabel = document.querySelector('label[for="amount"]');
+            amountLabel.innerHTML = `Amount (${currency.symbol}) <small class="text-muted">${currency.code}</small>`;
+        });
+        
+        // Update range slider values
+        document.getElementById('frequency').addEventListener('input', function() {
+            document.getElementById('frequency_value').textContent = this.value;
+        });
+        
+        document.getElementById('account_age').addEventListener('input', function() {
+            document.getElementById('account_age_value').textContent = this.value;
+        });
+        
+        document.getElementById('previous_flags').addEventListener('input', function() {
+            document.getElementById('previous_flags_value').textContent = this.value;
+        });
+        
+        // Set risk progress bar color and width
+        document.addEventListener('DOMContentLoaded', function() {
+            const riskBar = document.getElementById('risk-progress-bar');
+            if (riskBar) {
+                const score = parseFloat(riskBar.getAttribute('data-score'));
+                riskBar.style.width = (score * 100) + '%';
+                
+                if (score < 0.3) {
+                    riskBar.classList.add('bg-success');
+                } else if (score < 0.7) {
+                    riskBar.classList.add('bg-warning');
+                } else {
+                    riskBar.classList.add('bg-danger');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

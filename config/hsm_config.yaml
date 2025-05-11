@@ -1,0 +1,58 @@
+hsm:
+  # Key Management Settings
+  # Business must configure their own key rotation policy
+  key_rotation_days: ${BUSINESS_KEY_ROTATION_DAYS}
+  
+  # Business must configure their own key sizes
+  key_sizes:
+    aes: ${BUSINESS_AES_KEY_SIZE}
+    rsa: ${BUSINESS_RSA_KEY_SIZE}
+    ecc: ${BUSINESS_ECC_KEY_SIZE}
+    dh: ${BUSINESS_DH_KEY_SIZE}56
+  
+  # Supported Algorithms
+  crypto_algorithms:
+    signing:
+      - RSA-PSS
+      - ECDSA
+    encryption:
+      - AES-256-GCM
+      - RSA-OAEP
+    hashing:
+      - SHA-384
+      - SHA-512
+  
+  # Security Parameters
+  security:
+    key_storage: HSM
+    key_protection: hardware
+    key_access_policy: strict
+    audit_trail: enabled
+  
+  # Performance Settings
+  performance:
+    cache_size: 1000
+    cache_ttl: 3600
+    max_operations: 10000
+  
+  # Compliance Settings
+  compliance:
+    fips_mode: enabled
+    nist_compliance: enabled
+    audit_retention: 365
+  
+  # Monitoring Settings
+  monitoring:
+    enabled: true
+    metrics_interval: 60
+    alert_thresholds:
+      key_operations: 1000
+      failed_operations: 5
+      performance_degradation: 20
+  
+  # Backup Settings
+  backup:
+    enabled: true
+    frequency: daily
+    retention_days: 365
+    encryption: enabled

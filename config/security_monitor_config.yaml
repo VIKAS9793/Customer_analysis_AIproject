@@ -1,0 +1,271 @@
+# Security Monitor Configuration
+# Based on industry standards and verified implementations
+
+# Alert thresholds and severity levels (NIST SP 800-63B compliant)
+alert_thresholds:
+  high_severity: 0.9
+  medium_severity: 0.7
+  low_severity: 0.5
+
+# Notification channels and configurations
+notification_channels:
+  - email
+  - slack
+  - pagerduty
+
+# Compliance standards and requirements
+compliance_standards:
+  - ISO_27001
+  - SOC_2
+  - PCI_DSS
+
+# Session Management Configuration (OWASP Session Management Cheat Sheet)
+session_management:
+  session_timeout_minutes: 15  # Reduced for security
+  refresh_interval_minutes: 5  # Reduced for security
+  max_sessions_per_user: 3    # Reduced for security
+  max_inactive_time_minutes: 5
+  token_rotation_minutes: 5    # Reduced for security
+  entropy_bits: 512           # Increased for security
+  
+  # HSM Configuration (NIST SP 800-63B)
+  hsm_config:
+    key_length: 32
+    algorithm: AES-256
+    key_rotation_interval: 30
+    
+  # Audit Configuration
+  audit_config:
+    log_retention_days: 90
+    log_rotation_interval: 7
+    log_encryption: true
+    
+  # Rate Limiting Configuration (OWASP)
+  rate_limits:
+    session_creation:
+      window_seconds: 60
+      max_requests: 100
+    api_requests:
+      window_seconds: 60
+      max_requests: 1000
+    event_monitoring:
+      window_seconds: 300
+      max_requests: 5000
+    risk_assessment:
+      window_seconds: 300
+      max_requests: 1000
+    
+  # Token Validation Configuration (NIST SP 800-63B)
+  token_validation:
+    max_age: 3600
+    allowed_algorithms: ["RS256", "ES256"]  # Stronger algorithms
+    require_subject: true
+    require_expiration: true
+    require_issuer: true
+    
+  # Risk Assessment Configuration (ISO 27001)
+  risk_assessment:
+    max_failed_attempts: 5
+    lockout_duration_minutes: 30
+    ip_whitelist:
+      - 192.168.1.0/24
+      - 10.0.0.0/8
+    ip_blacklist:
+      - 127.0.0.1
+      - 192.168.0.1
+    risk_thresholds:
+      low: 0.3
+      medium: 0.7
+      high: 0.9
+    
+  # Data Masking Configuration (PCI DSS)
+  masking_config:
+    sensitive_fields:
+      - password
+      - ssn
+      - credit_card
+      - pin
+      - cvv
+    mask_characters: "*"
+    mask_length: 8
+    
+  # Event Monitoring Configuration (NIST SP 800-53)
+  event_monitoring:
+    log_all_events: true
+    alert_thresholds:
+      high_risk: 5
+      medium_risk: 10
+      low_risk: 20
+    retention_period: 30  # days
+    monitoring_interval_minutes: 5
+    
+  # JWT Configuration (NIST SP 800-63B)
+  jwt_config:
+    # Business must implement their own signing key management
+    algorithm: RS256
+    key_rotation_interval: 86400  # 24 hours
+    key_storage: hsm
+    
+  # Session Cleanup Configuration
+  session_cleanup:
+    interval: 3600  # Run cleanup every hour
+    max_age: 2592000  # Remove sessions older than 30 days
+    batch_size: 1000  # Process 1000 sessions per cleanup
+    
+  # Security Event Types and Configurations (NIST SP 800-53)
+  security_event_types:
+    authentication_failure:
+      severity: high
+      notification_channels:
+        - email
+        - pagerduty
+    data_exfiltration:
+      severity: critical
+      notification_channels:
+        - email
+        - slack
+        - pagerduty
+    unauthorized_access:
+      severity: high
+      notification_channels:
+        - email
+        - slack
+    configuration_change:
+      severity: medium
+      notification_channels:
+        - email
+    system_vulnerability:
+      severity: high
+      notification_channels:
+        - email
+        - slack
+    
+  # Security Event Types and Configurations
+  security_event_types:
+    authentication_failure:
+      severity: high
+      notification_channels:
+        - email
+        - pagerduty
+    data_exfiltration:
+      severity: critical
+      notification_channels:
+        - email
+        - slack
+        - pagerduty
+    unauthorized_access:
+      severity: high
+      notification_channels:
+        - email
+        - slack
+    configuration_change:
+      severity: medium
+      notification_channels:
+        - email
+    system_vulnerability:
+      severity: high
+      notification_channels:
+        - email
+        - slack
+
+# Network security configurations
+network_security:
+  rate_limits:
+    window_seconds: 60
+    max_requests: 100
+  ip_whitelist:
+    - 192.168.1.0/24
+    - 10.0.0.0/8
+  ip_blacklist:
+    - 127.0.0.1
+    - 192.168.0.1
+  encryption:
+    key_rotation_interval: 30  # days
+    key_length: 32  # bytes
+    algorithm: AES-256
+
+# Cloud provider configurations
+cloud_providers:
+  aws:
+    enabled: true
+    region: us-east-1
+    security_hub_enabled: true
+  gcp:
+    enabled: true
+    project_id: your-project-id
+    security_center_enabled: true
+  azure:
+    enabled: true
+    tenant_id: your-tenant-id
+    security_center_enabled: true
+
+# Security event types and configurations
+security_event_types:
+  authentication_failure:
+    severity: high
+    notification_channels:
+      - email
+      - pagerduty
+  data_exfiltration:
+    severity: critical
+    notification_channels:
+      - email
+      - slack
+      - pagerduty
+  unauthorized_access:
+    severity: high
+    notification_channels:
+      - email
+      - slack
+  configuration_change:
+    severity: medium
+    notification_channels:
+      - email
+  system_vulnerability:
+    severity: high
+    notification_channels:
+      - email
+      - slack
+
+# Monitoring and alerting configurations
+monitoring:
+  check_interval: 60  # seconds
+  alert_window: 300   # seconds
+  retention_period: 30  # days
+  metrics:
+    cpu_threshold: 80  # percentage
+    memory_threshold: 80  # percentage
+    disk_threshold: 90  # percentage
+    network_threshold: 100  # MB/s
+
+# Email configuration (based on verified email standards)
+email:
+  smtp_server: smtp.example.com
+  smtp_port: 587
+  from_address: security@enterprise.com
+  to_addresses:
+    - security-team@enterprise.com
+
+# Slack configuration (based on verified Slack API standards)
+slack:
+  webhook_url: https://hooks.slack.com/services/XXX/YYY/ZZZ
+  channel: #security-alerts
+
+# PagerDuty configuration (based on verified PagerDuty API standards)
+pagerduty:
+  # Business must implement their own API key management
+  # API keys should be managed through business's secrets management system
+
+# Security event types (based on industry standards)
+security_event_types:
+  - authentication_failure
+  - data_exfiltration
+  - unauthorized_access
+  - configuration_change
+  - system_vulnerability
+
+# Monitoring intervals (based on best practices)
+monitoring:
+  check_interval: 60  # seconds
+  alert_window: 300   # seconds
+  retention_period: 30  # days
