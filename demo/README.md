@@ -12,25 +12,25 @@ For full disclaimers, please see [DISCLAIMER.md](DISCLAIMER.md).
 
 ## Demo Video
 
-[![Demo Video](https://img.shields.io/badge/Watch-Demo%20Video-blue)](https://drive.google.com/file/d/1JUsVbIQwu0H7QH8O_Aq-rX229xJOKPqq/view?usp=drive_link)
+[![Demo Video](https://img.shields.io/badge/Watch-Demo%20Video-blue)](https://drive.google.com/file/d/1scdoP-IC_FkZlT0PYLGWlBW9a4cWOCY_/view?usp=drive_link)
 
-A complete demonstration of the FinConnectAI system is available in the [product demo video](https://drive.google.com/file/d/1JUsVbIQwu0H7QH8O_Aq-rX229xJOKPqq/view?usp=drive_link).
+A complete demonstration of the FinConnectAI system is available in the [product demo video](https://drive.google.com/file/d/1scdoP-IC_FkZlT0PYLGWlBW9a4cWOCY_/view?usp=drive_link).
 
-## Screenshots
+## Screenshot
+
+### Dashboard Overview
+![Dashboard Overview](static/images/dashboard_screenshot.png)
+*System overview showing key metrics and recent fraud detections*
 
 ### Dashboard
-![Dashboard](images/dashboard.png)
 *System overview with key metrics and recent fraud detections*
 
 ### Fraud Detection
-![Fraud Detection Form](images/fraud_detection.png)
 *Fraud detection interface with transaction details*
 
-![Fraud Analysis Results](images/fraud_analysis.png)
 *Detailed risk assessment with risk factors breakdown*
 
 ### Customer Insights
-![Customer Insights Generator](images/customer_insights.png)
 *Customer insights generator with region-specific parameters*
 
 ## Features

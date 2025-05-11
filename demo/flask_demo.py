@@ -5,7 +5,7 @@ A lightweight Flask-based demo interface for showcasing the capabilities
 of the FinConnectAI system to stakeholders.
 """
 
-from flask import Flask, render_template, request, jsonify, redirect, url_for
+from flask import Flask, render_template, request, jsonify
 import os
 import json
 import random
@@ -20,7 +20,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # Initialize Flask app
-app = Flask(__name__, static_url_path='/static', static_folder='.')
+app = Flask(__name__, static_url_path='/static', static_folder='static')
 app.secret_key = "finconnectai_demo_secret_key"
 
 # In-memory storage for demo data

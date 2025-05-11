@@ -1,0 +1,499 @@
+/**
+ * FinConnectAI Theme Integration
+ * Version: 1.0.0
+ * 
+ * This stylesheet integrates the FinConnectAI design system with the existing
+ * Bootstrap-based templates. It provides non-invasive style enhancements that
+ * improve the visual presentation without changing the underlying functionality.
+ * 
+ * ETHICAL CONSIDERATIONS:
+ * - Maintains accessibility with improved contrast ratios
+ * - Uses color psychology ethically for risk visualization
+ * - Ensures readability across device sizes
+ * - Provides visual cues for security status
+ */
+
+@import 'variables.css';
+@import 'components.css';
+@import 'utilities.css';
+
+/* ========== Bootstrap Integration ========== */
+
+/* Override Bootstrap variables with design system variables */
+:root {
+  /* Map Bootstrap variables to our design system */
+  --bs-primary: var(--finconnect-primary);
+  --bs-secondary: var(--finconnect-secondary);
+  --bs-success: var(--risk-low);
+  --bs-info: var(--security-info-color);
+  --bs-warning: var(--risk-medium);
+  --bs-danger: var(--risk-high);
+  --bs-light: var(--neutral-100);
+  --bs-dark: var(--neutral-900);
+  
+  /* Override Bootstrap component variables */
+  --bs-body-font-family: var(--font-family-primary);
+  --bs-body-font-size: var(--font-size-md);
+  --bs-body-font-weight: var(--font-weight-regular);
+  --bs-body-line-height: var(--line-height-normal);
+  --bs-body-color: var(--neutral-800);
+  --bs-body-bg: var(--neutral-50);
+  
+  /* Card variables */
+  --bs-card-border-radius: var(--border-radius-lg);
+  --bs-card-box-shadow: var(--shadow-md);
+  
+  /* Button variables */
+  --bs-btn-border-radius: var(--border-radius-md);
+  
+  /* Form variables */
+  --bs-border-radius: var(--border-radius-md);
+  --bs-border-color: var(--neutral-300);
+}
+
+/* ========== Typography Enhancements ========== */
+
+body {
+  font-family: var(--font-family-primary);
+  color: var(--neutral-800);
+  background-color: var(--neutral-50);
+  line-height: var(--line-height-normal);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: var(--font-weight-semibold);
+  color: var(--neutral-900);
+  margin-bottom: var(--space-4);
+}
+
+h1 {
+  font-size: var(--font-size-4xl);
+  line-height: 1.2;
+}
+
+h2 {
+  font-size: var(--font-size-3xl);
+  line-height: 1.25;
+}
+
+h3 {
+  font-size: var(--font-size-2xl);
+  line-height: 1.3;
+}
+
+h4 {
+  font-size: var(--font-size-xl);
+  line-height: 1.35;
+}
+
+h5 {
+  font-size: var(--font-size-lg);
+  line-height: 1.4;
+}
+
+h6 {
+  font-size: var(--font-size-md);
+  line-height: 1.5;
+}
+
+p {
+  margin-bottom: var(--space-4);
+}
+
+a {
+  color: var(--finconnect-primary);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+a:hover {
+  color: var(--finconnect-secondary);
+  text-decoration: underline;
+}
+
+/* ========== Component Enhancements ========== */
+
+/* Card Enhancements */
+.card {
+  border: none;
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-md);
+  margin-bottom: var(--space-6);
+  transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+  overflow: hidden;
+}
+
+.card:hover {
+  box-shadow: var(--shadow-lg);
+}
+
+.card-header {
+  background-color: white;
+  border-bottom: 1px solid var(--neutral-200);
+  font-weight: var(--font-weight-semibold);
+  color: var(--finconnect-primary);
+  padding: var(--space-4) var(--space-6);
+}
+
+.card-body {
+  padding: var(--space-6);
+}
+
+.card-footer {
+  background-color: var(--neutral-50);
+  border-top: 1px solid var(--neutral-200);
+  padding: var(--space-4) var(--space-6);
+}
+
+/* Button Enhancements */
+.btn {
+  font-weight: var(--font-weight-medium);
+  border-radius: var(--border-radius-md);
+  padding: var(--space-2) var(--space-4);
+  transition: all var(--transition-fast);
+}
+
+.btn:focus {
+  box-shadow: 0 0 0 0.25rem var(--finconnect-primary-20);
+}
+
+.btn-primary {
+  background-color: var(--finconnect-primary);
+  border-color: var(--finconnect-primary);
+}
+
+.btn-primary:hover {
+  background-color: color-mix(in srgb, var(--finconnect-primary) 90%, black);
+  border-color: color-mix(in srgb, var(--finconnect-primary) 90%, black);
+}
+
+.btn-secondary {
+  background-color: var(--finconnect-secondary);
+  border-color: var(--finconnect-secondary);
+}
+
+.btn-secondary:hover {
+  background-color: color-mix(in srgb, var(--finconnect-secondary) 90%, black);
+  border-color: color-mix(in srgb, var(--finconnect-secondary) 90%, black);
+}
+
+.btn-outline-primary {
+  color: var(--finconnect-primary);
+  border-color: var(--finconnect-primary);
+}
+
+.btn-outline-primary:hover {
+  background-color: var(--finconnect-primary);
+  border-color: var(--finconnect-primary);
+}
+
+/* Table Enhancements */
+.table {
+  color: var(--neutral-800);
+  margin-bottom: var(--space-6);
+}
+
+.table th {
+  font-weight: var(--font-weight-semibold);
+  color: var(--neutral-700);
+  border-bottom: 2px solid var(--neutral-300);
+  background-color: var(--neutral-50);
+}
+
+.table td {
+  vertical-align: middle;
+  padding: var(--space-3) var(--space-4);
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+  background-color: var(--neutral-50);
+}
+
+.table-hover tbody tr:hover {
+  background-color: var(--neutral-100);
+}
+
+/* Form Enhancements */
+.form-control {
+  border-color: var(--neutral-300);
+  border-radius: var(--border-radius-md);
+  padding: var(--space-2) var(--space-3);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.form-control:focus {
+  border-color: var(--finconnect-secondary);
+  box-shadow: 0 0 0 0.25rem var(--finconnect-secondary-20);
+}
+
+.form-label {
+  font-weight: var(--font-weight-medium);
+  margin-bottom: var(--space-2);
+  color: var(--neutral-700);
+}
+
+/* Nav Enhancements */
+.nav-pills .nav-link {
+  color: var(--neutral-700);
+  border-radius: var(--border-radius-md);
+  padding: var(--space-2) var(--space-4);
+  transition: all var(--transition-fast);
+}
+
+.nav-pills .nav-link:hover {
+  background-color: var(--neutral-100);
+}
+
+.nav-pills .nav-link.active {
+  background-color: var(--finconnect-primary);
+  color: white;
+}
+
+/* ========== Custom Component Enhancements ========== */
+
+/* Logo Container */
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.logo-img {
+  height: 40px;
+  width: auto;
+}
+
+/* Navbar Brand */
+.navbar-brand {
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-xl);
+}
+
+.navbar-brand span.fin,
+.navbar-brand span.ai {
+  color: var(--finconnect-primary);
+}
+
+.navbar-brand span.connect {
+  color: var(--finconnect-secondary);
+}
+
+/* Metric Cards */
+.metric-card {
+  text-align: center;
+  padding: var(--space-6);
+  border-radius: var(--border-radius-lg);
+  background-color: white;
+  transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+}
+
+.metric-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+}
+
+.metric-value {
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--finconnect-primary);
+  margin-bottom: var(--space-2);
+}
+
+.metric-label {
+  font-size: var(--font-size-sm);
+  color: var(--neutral-600);
+  margin-bottom: var(--space-2);
+}
+
+.metric-delta {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.delta-positive {
+  color: var(--risk-low);
+}
+
+.delta-negative {
+  color: var(--risk-high);
+}
+
+/* ========== Risk Visualization Enhancements ========== */
+
+/* Risk Badges */
+.badge {
+  font-weight: var(--font-weight-medium);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--border-radius-full);
+}
+
+.badge-low-risk {
+  background-color: var(--risk-low);
+  color: white;
+}
+
+.badge-medium-risk {
+  background-color: var(--risk-medium);
+  color: white;
+}
+
+.badge-high-risk {
+  background-color: var(--risk-high);
+  color: white;
+}
+
+.badge-unknown-risk {
+  background-color: var(--risk-unknown);
+  color: white;
+}
+
+/* Status Indicators */
+.status-indicator {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: var(--space-2);
+}
+
+.status-active {
+  background-color: var(--risk-low);
+}
+
+.status-pending {
+  background-color: var(--risk-medium);
+}
+
+.status-inactive {
+  background-color: var(--risk-high);
+}
+
+/* ========== Layout Enhancements ========== */
+
+.container {
+  padding-top: var(--space-6);
+  padding-bottom: var(--space-6);
+}
+
+header {
+  margin-bottom: var(--space-6);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--neutral-200);
+}
+
+footer {
+  margin-top: var(--space-6);
+  padding-top: var(--space-4);
+  color: var(--neutral-600);
+  border-top: 1px solid var(--neutral-200);
+}
+
+/* ========== Responsive Enhancements ========== */
+
+@media (max-width: 768px) {
+  .container {
+    padding-top: var(--space-4);
+    padding-bottom: var(--space-4);
+  }
+  
+  .card-body {
+    padding: var(--space-4);
+  }
+  
+  .metric-card {
+    padding: var(--space-4);
+    margin-bottom: var(--space-4);
+  }
+  
+  .metric-value {
+    font-size: var(--font-size-2xl);
+  }
+  
+  h1 {
+    font-size: var(--font-size-3xl);
+  }
+  
+  h2 {
+    font-size: var(--font-size-2xl);
+  }
+}
+
+/* ========== Accessibility Enhancements ========== */
+
+/* Focus Styles */
+a:focus, button:focus, input:focus, select:focus, textarea:focus {
+  outline: 2px solid var(--finconnect-primary);
+  outline-offset: 2px;
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* High Contrast Support */
+@media (forced-colors: active) {
+  .card {
+    border: 1px solid CanvasText;
+  }
+  
+  .btn {
+    border: 1px solid CanvasText;
+  }
+}
+
+/* ========== Dark Mode Support ========== */
+
+[data-theme="dark"] {
+  --bs-body-color: var(--neutral-200);
+  --bs-body-bg: var(--neutral-900);
+  
+  color: var(--neutral-200);
+  background-color: var(--neutral-900);
+}
+
+[data-theme="dark"] .card {
+  background-color: var(--neutral-800);
+  border-color: var(--neutral-700);
+}
+
+[data-theme="dark"] .card-header {
+  background-color: var(--neutral-800);
+  border-bottom-color: var(--neutral-700);
+}
+
+[data-theme="dark"] .table {
+  color: var(--neutral-300);
+}
+
+[data-theme="dark"] .table th {
+  background-color: var(--neutral-800);
+  border-bottom-color: var(--neutral-700);
+}
+
+[data-theme="dark"] .table-striped tbody tr:nth-of-type(odd) {
+  background-color: var(--neutral-850, #1a1d21);
+}
+
+[data-theme="dark"] .metric-card {
+  background-color: var(--neutral-800);
+}
+
+[data-theme="dark"] .form-control {
+  background-color: var(--neutral-800);
+  border-color: var(--neutral-700);
+  color: var(--neutral-200);
+}
+
+[data-theme="dark"] a {
+  color: var(--finconnect-secondary);
+}
+
+[data-theme="dark"] a:hover {
+  color: color-mix(in srgb, var(--finconnect-secondary) 80%, white);
+}
