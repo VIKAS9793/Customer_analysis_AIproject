@@ -1,4 +1,21 @@
-# FinConnectAI Project Overview
+# FinConnectAI
+
+<p align="center">
+  <img src="demo/images/finconnect_logo.png" alt="FinConnectAI Logo" width="200">
+</p>
+
+## Project Overview
+
+FinConnectAI is an AI-powered financial analytics and connectivity system designed to be a foundation for business-specific implementations. It provides integrated security, compliance, and monitoring capabilities focused on fraud detection, KYC verification, security checks, and compliance validation.
+
+## Ethical Use Policy
+
+FinConnectAI is designed to be used in a responsible and ethical manner. Users are expected to adhere to the following principles:
+
+* Use FinConnectAI for legitimate business purposes only
+* Comply with all applicable laws and regulations
+* Respect the privacy and security of individuals and organizations
+* Avoid using FinConnectAI for malicious or harmful activities
 
 ## Demo Available
 
@@ -661,3 +678,23 @@ Acknowledgements
 Special thanks to Claude 3.7 by Anthropic for providing powerful AI models.
 
 Thanks to contributors and collaborators for their support in developing this solution.
+
+---
+
+## License and Legal Information
+
+This project is licensed under the MIT License with Ethical Use Constraints - see the [LICENSE](LICENSE) file for details.
+
+### Branding Protection
+
+The name 'FinConnectAI' and its associated logo are trademarked and must not be reused without explicit permission from Vikas Sahani.
+
+### Disclaimer
+
+This project is provided as-is for responsible and lawful use. The maintainers are not liable for misuse, damage, or unethical implementation. Users must comply with all applicable laws and regulations when using this software.
+
+For more information about ethical use constraints, please see [ETHICAL_LICENSE.md](ETHICAL_LICENSE.md).
+
+---
+
+Copyright (c) 2025 Vikas Sahani. All rights reserved.
