@@ -1,0 +1,106 @@
+---
+# Simple RBAC configuration for FinConnectAI
+# Roles: admin, analyst, dev
+
+roles:
+  admin:
+    description: Full system access
+    permissions:
+      - manage_users
+      - view_all_transactions
+      - modify_system_settings
+      - access_audit_logs
+      - manage_consent
+      - manage_roles
+      - view_analytics
+      - run_evaluations
+      - access_api
+
+  analyst:
+    description: Access to fraud analysis and reporting
+    permissions:
+      - view_assigned_transactions
+      - run_fraud_analysis
+      - view_analytics
+      - export_reports
+      - access_api
+      - run_evaluations
+
+  dev:
+    description: Development and testing access
+    permissions:
+      - access_api
+      - run_evaluations
+      - view_test_data
+      - run_integration_tests
+      - view_logs
+
+# Permission descriptions
+permissions:
+  manage_users:
+    description: Create, modify, and delete user accounts
+    endpoints:
+      - POST /api/v1/users
+      - PUT /api/v1/users/{id}
+      - DELETE /api/v1/users/{id}
+
+  view_all_transactions:
+    description: View all transaction data in the system
+    endpoints:
+      - GET /api/v1/transactions
+      - GET /api/v1/transactions/{id}
+
+  modify_system_settings:
+    description: Modify system configuration and settings
+    endpoints:
+      - PUT /api/v1/settings
+      - POST /api/v1/config
+
+  access_audit_logs:
+    description: View system audit and consent logs
+    endpoints:
+      - GET /api/v1/audit
+      - GET /api/v1/consent
+
+  manage_consent:
+    description: Manage user consent settings
+    endpoints:
+      - POST /api/v1/consent
+      - PUT /api/v1/consent/{id}
+
+  manage_roles:
+    description: Assign and modify user roles
+    endpoints:
+      - POST /api/v1/roles
+      - PUT /api/v1/roles/{id}
+
+  view_analytics:
+    description: Access fraud detection analytics
+    endpoints:
+      - GET /api/v1/analytics
+      - GET /api/v1/reports
+
+  run_evaluations:
+    description: Run fraud detection evaluations
+    endpoints:
+      - POST /api/v1/fraud/evaluate
+
+  access_api:
+    description: Basic API access
+    endpoints:
+      - POST /api/v1/fraud/analyze
+
+  view_test_data:
+    description: Access test datasets
+    endpoints:
+      - GET /api/v1/test/*
+
+  run_integration_tests:
+    description: Execute integration tests
+    endpoints:
+      - POST /api/v1/test/integration/*
+
+  view_logs:
+    description: View system logs
+    endpoints:
+      - GET /api/v1/logs/*

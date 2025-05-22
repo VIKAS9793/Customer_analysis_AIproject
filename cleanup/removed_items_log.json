@@ -1,0 +1,216 @@
+{
+  "timestamp": "2025-05-22T19:23:38+05:30",
+  "removed_items": [
+    {
+      "path": "actions/",
+      "reason": "Entire actions directory not needed, using direct function calls"
+    },
+    {
+      "path": "agents/action_agent.py",
+      "reason": "Not part of core fraud detection"
+    },
+    {
+      "path": "agents/audit_agent.py",
+      "reason": "Using simple JSON logging instead"
+    },
+    {
+      "path": "agents/chat_agent.py",
+      "reason": "Chat functionality not in scope"
+    },
+    {
+      "path": "agents/explanation_agent.py",
+      "reason": "Explainability handled in Gradio UI"
+    },
+    {
+      "path": "agents/flagging_agent.py",
+      "reason": "Not part of core functionality"
+    },
+    {
+      "path": "agents/insight_agent.py",
+      "reason": "Analytics not in current scope"
+    },
+    {
+      "path": "agents/kyc_agent.py",
+      "reason": "KYC not in current scope"
+    },
+    {
+      "path": "agents/monitoring_agent.py",
+      "reason": "Using simple JSON logging"
+    },
+    {
+      "path": "ai_governance/",
+      "reason": "Complex governance not needed, using simple RBAC"
+    },
+    {
+      "path": "ACHIEVEMENTS.md",
+      "reason": "Not part of core documentation"
+    },
+    {
+      "path": "AI_MODEL_SPEC.md",
+      "reason": "Not creating new models"
+    },
+    {
+      "path": "API_REFERENCE.md",
+      "reason": "Using OpenAPI docs instead"
+    },
+    {
+      "path": "ARCHITECTURE.md",
+      "reason": "Structure defined in repo_structure.md"
+    },
+    {
+      "path": "AUDIT_TRAIL.md",
+      "reason": "Using JSON logs instead"
+    },
+    {
+      "path": "BUISNESS_USECASES.md",
+      "reason": "Not part of core documentation"
+    },
+    {
+      "path": "DATABASE_SCHEMA.md",
+      "reason": "No database in implementation"
+    },
+    {
+      "path": "DATA_PRIVACY_POLICY.md",
+      "reason": "Using consent logger instead"
+    },
+    {
+      "path": "DISCLAIMER.md",
+      "reason": "Not part of core documentation"
+    },
+    {
+      "path": "ETHICAL_LICENSE.md",
+      "reason": "Using standard LICENSE only"
+    },
+    {
+      "path": "FEEDBACK_LOOP.md",
+      "reason": "Not part of current scope"
+    },
+    {
+      "path": "GOVERNANCE.md",
+      "reason": "Using simple RBAC instead"
+    },
+    {
+      "path": "MODEL_CARD.md",
+      "reason": "Not creating new models"
+    },
+    {
+      "path": "MONITORING_GUIDE.md",
+      "reason": "Using simple JSON logging"
+    },
+    {
+      "path": "PROJECT_PITCH.md",
+      "reason": "Not part of core documentation"
+    },
+    {
+      "path": "SECURITY_GUIDELINES.md",
+      "reason": "Basic security in RBAC config"
+    },
+    {
+      "path": "SETUP_GUIDE.md",
+      "reason": "Setup in README.md"
+    },
+    {
+      "path": "TESTING.md",
+      "reason": "Tests are self-documenting"
+    },
+    {
+      "path": "TEST_PLAN.md",
+      "reason": "Tests are self-documenting"
+    }
+  ],
+  "kept_core_items": [
+    {
+      "path": "app/api_routes.py",
+      "task_id": "val-002",
+      "purpose": "FastAPI endpoints"
+    },
+    {
+      "path": "app/fraud_evaluator.py",
+      "task_id": "val-001",
+      "purpose": "Fraud detection evaluation"
+    },
+    {
+      "path": "agents/fraud_agent.py",
+      "task_id": "val-001",
+      "purpose": "Core fraud detection"
+    },
+    {
+      "path": "ui/gradio_fraud_explain.py",
+      "task_id": "ux-001",
+      "purpose": "Fraud analysis UI"
+    },
+    {
+      "path": "connectors/mock_core_api.py",
+      "task_id": "int-001",
+      "purpose": "Mock banking API"
+    },
+    {
+      "path": "auth/consent_logger.py",
+      "task_id": "gov-001",
+      "purpose": "Consent tracking"
+    },
+    {
+      "path": "auth/rbac_config.yaml",
+      "task_id": "gov-002",
+      "purpose": "Role-based access"
+    },
+    {
+      "path": "scripts/start_demo_env.sh",
+      "task_id": "dev-002",
+      "purpose": "Demo environment"
+    },
+    {
+      "path": "scripts/generate_openapi.py",
+      "task_id": "ux-002",
+      "purpose": "API documentation"
+    },
+    {
+      "path": "docs/openapi.json",
+      "task_id": "ux-002",
+      "purpose": "API specification"
+    },
+    {
+      "path": "docs/repo_structure.md",
+      "task_id": "clean-002",
+      "purpose": "Project structure"
+    },
+    {
+      "path": "tests/test_api_routes.py",
+      "task_id": "val-002",
+      "purpose": "API testing"
+    },
+    {
+      "path": "tests/test_fraud_evaluator.py",
+      "task_id": "val-001",
+      "purpose": "Evaluator testing"
+    },
+    {
+      "path": "tests/test_core_banking.py",
+      "task_id": "int-001",
+      "purpose": "Connector testing"
+    },
+    {
+      "path": "tests/test_consent_logger.py",
+      "task_id": "gov-001",
+      "purpose": "Consent testing"
+    },
+    {
+      "path": "Dockerfile",
+      "task_id": "dev-001",
+      "purpose": "Container build"
+    },
+    {
+      "path": "requirements.txt",
+      "task_id": "dev-001",
+      "purpose": "Dependencies"
+    },
+    {
+      "path": "README.md",
+      "purpose": "Project overview"
+    },
+    {
+      "path": "LICENSE",
+      "purpose": "License terms"
+    }
+  ]
+}

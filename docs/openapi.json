@@ -1,0 +1,359 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "FinConnectAI API",
+    "description": "Enterprise fraud detection and analysis API",
+    "version": "2.1",
+    "x-logo": {
+      "url": "https://example.com/logo.png"
+    }
+  },
+  "paths": {
+    "/api/v1/fraud/analyze": {
+      "post": {
+        "summary": "Analyze transaction for fraud",
+        "description": "Analyzes a single transaction for potential fraud using the FraudAgent",
+        "operationId": "analyze_transaction_api_v1_fraud_analyze_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Transaction"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FraudAnalysisResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/fraud/evaluate": {
+      "post": {
+        "summary": "Evaluate fraud detection performance",
+        "description": "Calculate performance metrics using synthetic data and model outputs",
+        "operationId": "evaluate_fraud_detection_api_v1_fraud_evaluate_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EvaluationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EvaluationReport"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/fraud/latest-report": {
+      "get": {
+        "summary": "Get latest evaluation report",
+        "description": "Retrieve the most recent fraud detection evaluation report",
+        "operationId": "get_latest_evaluation_api_v1_fraud_latest_report_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EvaluationReport"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "EvaluationMetrics": {
+        "properties": {
+          "true_positives": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "True Positives",
+            "description": "Number of correctly identified fraud cases"
+          },
+          "false_positives": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "False Positives",
+            "description": "Number of legitimate transactions flagged as fraud"
+          },
+          "true_negatives": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "True Negatives",
+            "description": "Number of correctly identified legitimate transactions"
+          },
+          "false_negatives": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "False Negatives",
+            "description": "Number of fraud cases missed"
+          },
+          "precision": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Precision",
+            "description": "Precision score (0-1)"
+          },
+          "recall": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Recall",
+            "description": "Recall score (0-1)"
+          },
+          "f1_score": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "F1 Score",
+            "description": "F1 score (0-1)"
+          },
+          "accuracy": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Accuracy",
+            "description": "Accuracy score (0-1)"
+          }
+        },
+        "type": "object",
+        "required": [
+          "true_positives",
+          "false_positives",
+          "true_negatives",
+          "false_negatives",
+          "precision",
+          "recall",
+          "f1_score",
+          "accuracy"
+        ],
+        "title": "EvaluationMetrics"
+      },
+      "EvaluationReport": {
+        "properties": {
+          "metrics": {
+            "$ref": "#/components/schemas/EvaluationMetrics"
+          },
+          "metadata": {
+            "type": "object",
+            "title": "Metadata",
+            "description": "Report metadata including timestamp"
+          }
+        },
+        "type": "object",
+        "required": [
+          "metrics",
+          "metadata"
+        ],
+        "title": "EvaluationReport"
+      },
+      "EvaluationRequest": {
+        "properties": {
+          "synthetic_data": {
+            "items": {
+              "additionalProperties": {
+                "type": "boolean"
+              },
+              "type": "object"
+            },
+            "type": "array",
+            "title": "Synthetic Data",
+            "description": "List of ground truth data with 'is_fraud' labels"
+          },
+          "model_output": {
+            "items": {
+              "type": "object"
+            },
+            "type": "array",
+            "title": "Model Output",
+            "description": "List of model predictions with decisions"
+          }
+        },
+        "type": "object",
+        "required": [
+          "synthetic_data",
+          "model_output"
+        ],
+        "title": "EvaluationRequest"
+      },
+      "FraudAnalysisResponse": {
+        "properties": {
+          "decision": {
+            "type": "string",
+            "title": "Decision",
+            "description": "Fraud decision: 'fraud' or 'legitimate'"
+          },
+          "confidence": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Confidence",
+            "description": "Confidence score between 0 and 1"
+          },
+          "explanation": {
+            "type": "string",
+            "title": "Explanation",
+            "description": "Human-readable explanation of the decision"
+          },
+          "recommended_action": {
+            "type": "string",
+            "title": "Recommended Action",
+            "description": "Recommended action based on analysis"
+          },
+          "timestamp": {
+            "type": "string",
+            "title": "Timestamp",
+            "description": "Analysis timestamp in ISO format"
+          }
+        },
+        "type": "object",
+        "required": [
+          "decision",
+          "confidence",
+          "explanation",
+          "recommended_action",
+          "timestamp"
+        ],
+        "title": "FraudAnalysisResponse"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "Transaction": {
+        "properties": {
+          "transaction_id": {
+            "type": "string",
+            "title": "Transaction Id",
+            "description": "Unique identifier for the transaction"
+          },
+          "amount": {
+            "type": "number",
+            "exclusiveMinimum": 0.0,
+            "title": "Amount",
+            "description": "Transaction amount"
+          },
+          "merchant": {
+            "type": "string",
+            "title": "Merchant",
+            "description": "Name of the merchant"
+          },
+          "customer_id": {
+            "type": "string",
+            "title": "Customer Id",
+            "description": "Customer identifier"
+          },
+          "timestamp": {
+            "type": "string",
+            "title": "Timestamp",
+            "description": "Transaction timestamp in ISO format"
+          }
+        },
+        "type": "object",
+        "required": [
+          "transaction_id",
+          "amount",
+          "merchant",
+          "customer_id"
+        ],
+        "title": "Transaction"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "fraud",
+      "description": "Fraud detection and analysis endpoints"
+    }
+  ]
+}
