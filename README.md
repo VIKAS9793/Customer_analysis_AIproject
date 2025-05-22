@@ -49,6 +49,21 @@ An AI-powered financial fraud detection and currency exchange system with real-t
     └── gradio_fraud_explain.py # Gradio UI
 ```
 
+## Demo
+
+Check out our working demo video to see FinConnectAI in action:
+
+[![FinConnectAI Demo](https://img.youtube.com/vi/p3UMmnf9rec/0.jpg)](https://youtu.be/p3UMmnf9rec)
+
+Click the image above to watch the demo on YouTube.
+
+### Demo Features Shown:
+- Real-time fraud detection analysis
+- Interactive Gradio interface
+- Currency conversion functionality
+- Transaction risk assessment
+- Detailed explanation of fraud decisions
+
 ## Quick Start
 
 1. **Install Dependencies**

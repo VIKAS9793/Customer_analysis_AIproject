@@ -91,14 +91,19 @@ def analyze_transaction(transaction_id, amount, currency, merchant, customer_id,
         
         if response.status_code == 200:
             result = response.json()
-            output = f"Decision: {result['decision']}\n"
-            output += f"Confidence: {result['confidence']}%\n\n"
-            output += f"Explanation:\n"
-            output += f"Risk score: {result['risk_score']}\n"
-            output += f"Amount: {format_amount(result['amount'], result['currency'])}\n"
-            output += f"Location: {result['location'] or 'Unknown'}\n\n"
-            output += f"Recommended Action:\n"
-            output += f"{result['recommended_action']}"
+            # Format the output with available fields
+            output = f"Decision: {result.get('decision', 'UNKNOWN')}\n"
+            output += f"Confidence: {result.get('confidence', 0) * 100:.1f}%\n\n"
+            output += f"Explanation:\n{result.get('explanation', 'No explanation provided')}\n"
+            output += f"Risk score: {result.get('risk_score', 0):.2f}\n"
+            
+            # Include amount and location if available in the request
+            if 'amount' in locals() and 'currency' in locals():
+                output += f"Amount: {format_amount(amount, currency)}\n"
+            if 'location' in locals():
+                output += f"Location: {location or 'Unknown'}\n"
+                
+            output += f"\nRecommended Action:\n{result.get('recommended_action', 'No action recommended')}"
             return output
         else:
             return f"Error: {response.status_code} - {response.text}"
@@ -231,14 +236,25 @@ with gr.Blocks(title="FinConnectAI Fraud Analysis") as demo:
         outputs=[converted_amount, exchange_rate_text]
     )
     
-    # Start currency cache service
-    asyncio.create_task(currency_cache.start())
-
-
 if __name__ == "__main__":
+    # Start the currency cache in the main thread
+    import threading
+    
+    def start_cache():
+        import asyncio
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        try:
+            loop.run_until_complete(currency_cache.start())
+        except Exception as e:
+            print(f"Error in currency cache: {e}")
+    
+    # Start cache in a daemon thread
+    cache_thread = threading.Thread(target=start_cache, daemon=True)
+    cache_thread.start()
+    
+    # Start the Gradio interface
     demo.launch(
         server_name="127.0.0.1",
-        server_port=7864,  # Changed port to avoid conflicts
-        share=False,  # Don't expose publicly
-        pwa=True  # Enable Progressive Web App support
+        share=False
     )

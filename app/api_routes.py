@@ -2,15 +2,18 @@
 FastAPI routes for FinConnectAI fraud detection endpoints
 """
 
+import logging
 from datetime import datetime
-from typing import Any, Dict, List
-
+from typing import Any, Dict, List, Optional
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 
-from agents.fraud_agent import FraudAgent
+# Configure logging
+logger = logging.getLogger(__name__)
 
-from .fraud_evaluator import FraudEvaluator
+from agents.fraud_agent import FraudAgent
+from app.fraud_evaluator import FraudEvaluator
+from app.models import Currency
 
 
 class Transaction(BaseModel):
@@ -18,6 +21,8 @@ class Transaction(BaseModel):
     amount: float = Field(gt=0, description="Transaction amount")
     merchant: str = Field(description="Name of the merchant")
     customer_id: str = Field(description="Customer identifier")
+    currency: Currency = Field(default=Currency.USD, description="Transaction currency")
+    location: Optional[str] = Field(default=None, description="Transaction location")
     timestamp: str = Field(
         default_factory=lambda: datetime.utcnow().isoformat(),
         description="Transaction timestamp in ISO format",
@@ -25,9 +30,10 @@ class Transaction(BaseModel):
 
 
 class FraudAnalysisResponse(BaseModel):
-    decision: str = Field(description="Fraud decision: 'fraud' or 'legitimate'")
+    decision: str = Field(description="Fraud decision: 'REJECT', 'REVIEW', or 'APPROVE'")
     confidence: float = Field(ge=0, le=1, description="Confidence score between 0 and 1")
     explanation: str = Field(description="Human-readable explanation of the decision")
+    risk_score: float = Field(ge=0, le=1, description="Risk score between 0 and 1")
     recommended_action: str = Field(description="Recommended action based on analysis")
     timestamp: str = Field(description="Analysis timestamp in ISO format")
 
@@ -61,7 +67,7 @@ app = FastAPI(
 )
 
 # Initialize components
-fraud_agent = FraudAgent({"risk_threshold": 0.7})
+fraud_agent = FraudAgent()
 evaluator = FraudEvaluator()
 
 
@@ -78,30 +84,83 @@ async def analyze_transaction(transaction: Transaction) -> FraudAnalysisResponse
         transaction_dict = transaction.dict()
         transaction_dict["timestamp"] = datetime.utcnow().isoformat()
 
-        result = fraud_agent.analyze_transaction(transaction_dict)
+        # Ensure all required fields are present and valid
+        required_fields = ["transaction_id", "amount", "merchant", "customer_id"]
+        for field in required_fields:
+            if field not in transaction_dict or transaction_dict[field] is None:
+                raise HTTPException(
+                    status_code=400,
+                    detail=f"Missing required field: {field}"
+                )
+
+        try:
+            result = fraud_agent.analyze_transaction(transaction_dict)
+        except Exception as agent_error:
+            logger.error(f"Error in fraud agent: {str(agent_error)}")
+            raise HTTPException(
+                status_code=500,
+                detail=f"Error processing transaction: {str(agent_error)}"
+            )
+
+        # Validate required response fields
+        required_response_fields = ["decision", "confidence", "explanation"]
+        for field in required_response_fields:
+            if field not in result or result[field] is None:
+                raise HTTPException(
+                    status_code=500,
+                    detail=f"Invalid response from fraud agent: missing {field}"
+                )
         
-        # Create response with proper currency and location
+        # Process confidence (ensure it's between 0 and 1)
+        try:
+            confidence = float(result["confidence"])
+            confidence = max(0.0, min(1.0, confidence))  # Clamp between 0 and 1
+            if confidence > 1.0 and confidence <= 100.0:
+                confidence = confidence / 100.0  # Convert percentage to decimal if needed
+        except (ValueError, TypeError):
+            confidence = 0.5  # Default confidence if invalid
+            
+        # Process risk score (ensure it's between 0 and 1)
+        try:
+            risk_score = float(result.get("risk_score", 0.0))
+            risk_score = max(0.0, min(1.0, risk_score))  # Clamp between 0 and 1
+        except (ValueError, TypeError):
+            risk_score = 0.0  # Default risk score if invalid
+        
+        # Get other fields with defaults
+        decision = str(result.get("decision", "REVIEW")).upper()
+        explanation = str(result.get("explanation", "No explanation provided"))
+        recommended_action = str(result.get("recommended_action", "Review recommended"))
+        timestamp = result.get("timestamp", datetime.utcnow().isoformat())
+        
         return FraudAnalysisResponse(
-            decision=result["decision"],
-            confidence=result["confidence"] * 100,  # Convert to percentage
-            explanation=result["explanation"],
-            risk_score=result["risk_score"],
-            amount=transaction.amount,
-            currency=transaction.currency,
-            location=transaction.location,
-            recommended_action=result["recommended_action"],
-            timestamp=datetime.utcnow().isoformat()
+            decision=decision,
+            confidence=confidence,
+            explanation=explanation,
+            risk_score=risk_score,
+            recommended_action=recommended_action,
+            timestamp=timestamp
         )
+        
+    except HTTPException:
+        raise  # Re-raise HTTP exceptions
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.error(f"Unexpected error in analyze_transaction: {str(e)}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"An unexpected error occurred: {str(e)}"
+        )
 
 
 class EvaluationRequest(BaseModel):
+    model_config = {"protected_namespaces": ()}
+    
     synthetic_data: List[Dict[str, bool]] = Field(
         description="List of ground truth data with 'is_fraud' labels"
     )
-    model_output: List[Dict[str, Any]] = Field(
-        description="List of model predictions with decisions"
+    model_predictions: List[Dict[str, Any]] = Field(
+        description="List of model predictions with decisions",
+        alias="model_output"  # Maintains backward compatibility with existing code
     )
 
 
@@ -114,10 +173,26 @@ class EvaluationRequest(BaseModel):
 async def evaluate_fraud_detection(request: EvaluationRequest) -> EvaluationReport:
     """Evaluate fraud detection performance."""
     try:
-        report = evaluator.evaluate_predictions(request.synthetic_data, request.model_output)
+        # Convert the request data to the format expected by the evaluator
+        ground_truth = [item["is_fraud"] for item in request.synthetic_data]
+        predictions = [
+            {"is_fraud": item.get("is_fraud", False), "confidence": item.get("confidence", 0.0)}
+            for item in request.model_predictions
+        ]
+        
+        # Get evaluation metrics
+        metrics = evaluator.evaluate(ground_truth, predictions)
+        
+        # Create and return the evaluation report
+        report = EvaluationReport(
+            metrics=metrics,
+            metadata={
+                "evaluation_timestamp": datetime.utcnow().isoformat(),
+                "model_version": "1.0.0"
+            }
+        )
         return report
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+        
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
