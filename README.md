@@ -9,10 +9,11 @@ A fraud detection and analysis system with a FastAPI backend and Gradio UI front
 ## Features
 
 - **Fraud Analysis**: Real-time transaction analysis using the `FraudAgent`
-- **Interactive UI**: Gradio-based interface with PWA support for fraud analysis
-- **REST API**: FastAPI endpoints for fraud detection and evaluation
-- **Authentication**: Role-based access control and consent logging
-- **Testing**: Comprehensive test suite for all components
+- **Interactive UI**: Gradio-based interface for fraud analysis visualization
+- **REST API**: FastAPI endpoints for fraud detection and performance evaluation
+- **Security**: Role-based access control (RBAC) and consent logging
+- **Mock Integration**: Core banking API simulation for testing
+- **Testing**: Comprehensive test suite covering all components
 
 ## Project Structure
 
@@ -22,6 +23,8 @@ A fraud detection and analysis system with a FastAPI backend and Gradio UI front
 ├── app/                   # Core application
 │   ├── api_routes.py      # FastAPI routes
 │   └── fraud_evaluator.py # Fraud evaluation logic
+├── assets/                # Project assets
+│   └── logo.png          # Project logo
 ├── auth/                  # Authentication & authorization
 │   ├── consent_logger.py  # Consent logging system
 │   └── rbac_config.yaml   # Role-based access control config
@@ -40,15 +43,15 @@ A fraud detection and analysis system with a FastAPI backend and Gradio UI front
 
 ## API Endpoints
 
-- `/api/v1/fraud/analyze`: Analyze a single transaction for fraud
+- `/fraud/analyze`: Analyze a single transaction for fraud
   - Input: Transaction details (ID, amount, merchant, customer)
   - Output: Fraud decision with confidence score and explanation
 
-- `/api/v1/fraud/evaluate`: Evaluate fraud detection performance
+- `/fraud/evaluate`: Evaluate fraud detection performance
   - Input: Ground truth data and model predictions
   - Output: Evaluation metrics (precision, recall, F1, accuracy)
 
-- `/api/v1/fraud/metrics`: Get latest evaluation metrics
+- `/fraud/metrics`: Get latest evaluation metrics
   - Output: Current model performance statistics
 
 ## Getting Started
