@@ -21,13 +21,10 @@ A fraud detection and analysis system with a FastAPI backend and Gradio UI front
 ├── auth/                  # Authentication & authorization
 │   ├── consent_logger.py  # Consent logging system
 │   └── rbac_config.yaml   # Role-based access control config
-├── cleanup/               # Cleanup utilities
-│   └── removed_items_log.json # Log of removed items
 ├── connectors/            # External system connectors
 │   └── mock_core_api.py   # Mock core banking API
 ├── docs/                  # Documentation
-│   ├── openapi.json       # OpenAPI specification
-│   └── repo_structure.md  # Repository structure docs
+│   └── openapi.json       # OpenAPI specification
 ├── tests/                 # Test suite
 │   ├── test_api_routes.py  # API tests
 │   ├── test_consent_logger.py # Consent logger tests
