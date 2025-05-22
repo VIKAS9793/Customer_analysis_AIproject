@@ -1,5 +1,9 @@
 # FinConnectAI
 
+<p align="center">
+  <img src="assets/logo.png" alt="FinConnectAI Logo" width="400">
+</p>
+
 A fraud detection and analysis system with a FastAPI backend and Gradio UI frontend.
 
 ## Features
