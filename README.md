@@ -1,57 +1,120 @@
 # FinConnectAI
 
-<p align="center">
-  <img src="assets/logo.png" alt="FinConnectAI Logo" width="400">
-</p>
-
-A fraud detection and analysis system with a FastAPI backend and Gradio UI frontend.
+An AI-powered financial fraud detection and currency exchange system with real-time analysis capabilities.
 
 ## Features
 
-- **Fraud Analysis**: Real-time transaction analysis using the `FraudAgent`
-- **Interactive UI**: Gradio-based interface for fraud analysis visualization
-- **REST API**: FastAPI endpoints for fraud detection and performance evaluation
-- **Security**: Role-based access control (RBAC) and consent logging
-- **Mock Integration**: Core banking API simulation for testing
-- **Testing**: Comprehensive test suite covering all components
+### Fraud Detection
+- **Real-time Analysis**: Transaction fraud detection using advanced AI
+- **Interactive UI**: Gradio-based interface for fraud analysis
+- **Explainable AI**: Clear reasoning for fraud decisions
+
+### Currency Services
+- **Live Exchange Rates**: Real-time currency conversion
+- **Rate Caching**: Efficient rate updates and caching
+- **Multi-currency Support**: Major currency pairs supported
+
+### Compliance
+- **Regulatory Compliance**: EU AI Act and RBI guidelines
+- **Audit Logging**: Comprehensive transaction tracking
+- **Documentation**: Automated compliance reporting
+
+### Technical Features
+- **FastAPI Backend**: High-performance API endpoints
+- **Gradio Frontend**: User-friendly interface
+- **Automated Testing**: Comprehensive test coverage
+- **Async Support**: Non-blocking operations
 
 ## Project Structure
 
 ```
-├── agents/                 # AI agents implementation
-│   └── fraud_agent.py     # Fraud detection and analysis
 ├── app/                   # Core application
 │   ├── api_routes.py      # FastAPI routes
-│   └── fraud_evaluator.py # Fraud evaluation logic
-├── assets/                # Project assets
-│   └── logo.png          # Project logo
-├── auth/                  # Authentication & authorization
-│   ├── consent_logger.py  # Consent logging system
-│   └── rbac_config.yaml   # Role-based access control config
-├── connectors/            # External system connectors
-│   └── mock_core_api.py   # Mock core banking API
+│   ├── compliance.py      # Compliance management
+│   ├── currency_cache.py  # Exchange rate caching
+│   ├── currency_exchange.py # Currency conversion
+│   ├── fraud_evaluator.py # Fraud evaluation
+│   └── models.py         # Data models
 ├── docs/                  # Documentation
-│   └── openapi.json       # OpenAPI specification
+│   ├── API.md            # API documentation
+│   ├── ARCHITECTURE.md   # System architecture
+│   ├── CONTRIBUTING.md   # Contribution guide
+│   ├── SETUP.md         # Setup instructions
+│   └── compliance_guidelines.md # Compliance docs
 ├── tests/                 # Test suite
 │   ├── test_api_routes.py  # API tests
-│   ├── test_consent_logger.py # Consent logger tests
-│   ├── test_core_banking.py  # Core banking tests
-│   └── test_fraud_evaluator.py # Fraud evaluator tests
+│   ├── test_currency_exchange.py # Currency tests
+│   └── test_fraud_evaluator.py # Fraud detection tests
 └── ui/                    # User interface
-    └── gradio_fraud_explain.py # Gradio UI for fraud analysis
+    └── gradio_fraud_explain.py # Gradio UI
+```
+
+## Quick Start
+
+1. **Install Dependencies**
+```bash
+pip install -r requirements.txt
+```
+
+2. **Set Environment Variables**
+Create `.env` file:
+```env
+EXCHANGE_RATE_API_KEY=your_api_key_here
+```
+
+3. **Run the Application**
+```bash
+# Start API server
+uvicorn app.api_routes:app --reload
+
+# Start Gradio UI
+python -m ui.gradio_fraud_explain
 ```
 
 ## API Endpoints
 
-- `/fraud/analyze`: Analyze a single transaction for fraud
-  - Input: Transaction details (ID, amount, merchant, customer)
-  - Output: Fraud decision with confidence score and explanation
+### Fraud Detection
+```http
+POST /api/v1/fraud/analyze
+```
+Analyze a transaction for potential fraud.
 
-- `/fraud/evaluate`: Evaluate fraud detection performance
-  - Input: Ground truth data and model predictions
-  - Output: Evaluation metrics (precision, recall, F1, accuracy)
+### Currency Exchange
+```http
+GET /api/v1/currency/rates/{base_currency}
+```
+Get current exchange rates for a base currency.
 
-- `/fraud/metrics`: Get latest evaluation metrics
+### Compliance
+```http
+POST /api/v1/compliance/check
+```
+Verify transaction compliance with regulations.
+## Documentation
+
+- [Setup Guide](docs/SETUP.md)
+- [API Documentation](docs/API.md)
+- [Architecture Overview](docs/ARCHITECTURE.md)
+- [Contributing Guidelines](docs/CONTRIBUTING.md)
+- [Compliance Guidelines](docs/compliance_guidelines.md)
+
+## Testing
+
+```bash
+# Run all tests
+pytests tests/
+
+# Run with coverage
+pytest --cov=app tests/
+```
+
+## Contributing
+
+We welcome contributions! Please see our [Contributing Guidelines](docs/CONTRIBUTING.md) for details.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
   - Output: Current model performance statistics
 
 ## Getting Started

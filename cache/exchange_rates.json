@@ -1,0 +1,38 @@
+{
+  "USD": {
+    "base_currency": "USD",
+    "conversion_rates": {
+      "INR": 85.6383,
+      "EUR": 0.883,
+      "GBP": 0.7452,
+      "SGD": 1.2895
+    },
+    "source": "https://v6.exchangerate-api.com/v6/e4bbd2a2d3e5d91f604a9858/latest/USD",
+    "timestamp": "2025-05-22T15:50:53.358979Z",
+    "trust_score": 0.95
+  },
+  "EUR": {
+    "base_currency": "EUR",
+    "conversion_rates": {
+      "INR": 96.9605,
+      "EUR": 1,
+      "GBP": 0.844,
+      "SGD": 1.4605
+    },
+    "source": "https://v6.exchangerate-api.com/v6/e4bbd2a2d3e5d91f604a9858/latest/EUR",
+    "timestamp": "2025-05-22T15:50:53.583890Z",
+    "trust_score": 0.95
+  },
+  "GBP": {
+    "base_currency": "GBP",
+    "conversion_rates": {
+      "INR": 114.8532,
+      "EUR": 1.1848,
+      "GBP": 1,
+      "SGD": 1.73
+    },
+    "source": "https://v6.exchangerate-api.com/v6/e4bbd2a2d3e5d91f604a9858/latest/GBP",
+    "timestamp": "2025-05-22T15:50:53.785147Z",
+    "trust_score": 0.95
+  }
+}

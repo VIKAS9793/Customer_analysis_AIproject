@@ -73,17 +73,25 @@ evaluator = FraudEvaluator()
 )
 async def analyze_transaction(transaction: Transaction) -> FraudAnalysisResponse:
     """Analyze a single transaction for fraud."""
-    required_fields = ["transaction_id", "amount", "merchant"]
-    missing_fields = [field for field in required_fields if field not in transaction]
-
-    if missing_fields:
-        raise HTTPException(
-            status_code=400, detail=f"Missing required fields: {', '.join(missing_fields)}"
-        )
-
     try:
-        result = fraud_agent.analyze_transaction(transaction)
-        return result
+        # Convert to dict and add timestamp
+        transaction_dict = transaction.dict()
+        transaction_dict["timestamp"] = datetime.utcnow().isoformat()
+
+        result = fraud_agent.analyze_transaction(transaction_dict)
+        
+        # Create response with proper currency and location
+        return FraudAnalysisResponse(
+            decision=result["decision"],
+            confidence=result["confidence"] * 100,  # Convert to percentage
+            explanation=result["explanation"],
+            risk_score=result["risk_score"],
+            amount=transaction.amount,
+            currency=transaction.currency,
+            location=transaction.location,
+            recommended_action=result["recommended_action"],
+            timestamp=datetime.utcnow().isoformat()
+        )
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
