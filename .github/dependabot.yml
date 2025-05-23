@@ -1,0 +1,24 @@
+version: 2
+updates:
+  # Enable version updates for GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    # Assign pull requests to the designated developer
+    assignees:
+      - "VIKAS9793"
+    labels:
+      - "dependencies"
+      - "github-actions"
+
+  # Enable version updates for pip
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    assignees:
+      - "VIKAS9793"
+    labels:
+      - "dependencies"
+      - "python"
