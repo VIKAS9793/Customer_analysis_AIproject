@@ -1,20 +1,21 @@
-.PHONY: install test lint format check-codestyle typecheck clean
+.PHONY: init install lint format mypy test test-async doc clean docker
 
-# Installation
+# Initialize project environment
+init:
+	conda create -n finconnectai python=3.9 -y
+	conda activate finconnectai
+	pip install "poetry>=1.6.0"
+	poetry install
+
+# Install project in development mode
 install:
-	pip install -e .
-	pip install -r requirements-dev.txt
-	pre-commit install
+	poetry install
 
-# Testing
-test:
-	python -m pytest tests/ -v --cov=app --cov-report=term-missing
-
-test-cov:
-	python -m pytest tests/ -v --cov=app --cov-report=html
-
-# Linting and formatting
+# Run code formatting and linting
 lint:
+	black .
+	isort .
+	mypy app/
 	flake8 .
 	black --check .
 	isort --check-only .

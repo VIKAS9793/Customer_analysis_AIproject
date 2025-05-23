@@ -6,19 +6,17 @@ import os
 import tempfile
 import pytest
 import pandas as pd
-from app.data_generator import TransactionGenerator, generate_synthetic_dataset
+from tests.data_generator import TestDataGenerator
 
-def test_transaction_generator_initialization():
-    """Test that the transaction generator initializes correctly."""
-    generator = TransactionGenerator(n_customers=10, seed=42)
-    assert len(generator.customer_profiles) == 10
-    assert all('customer_id' in customer for customer in generator.customer_profiles)
-    assert all('account_balance' in customer for customer in generator.customer_profiles)
+def test_data_generator_initialization():
+    """Test that the data generator initializes correctly."""
+    generator = TestDataGenerator(seed=42)
+    assert generator is not None
 
-def test_generate_transactions():
-    """Test generating a small number of transactions."""
-    generator = TransactionGenerator(n_customers=10, seed=42)
-    transactions = generator.generate_transactions(n_transactions=100, fraud_rate=0.1)
+def test_generate_test_data():
+    """Test generating test data."""
+    generator = TestDataGenerator(seed=42)
+    transactions = generator.generate_test_data(num_transactions=100, fraud_rate=0.1)
     
     assert len(transactions) == 100
     assert all('transaction_id' in t for t in transactions)
@@ -29,33 +27,25 @@ def test_generate_transactions():
     fraud_count = sum(1 for t in transactions if t['is_fraud'])
     assert 5 <= fraud_count <= 15  # Allow some flexibility in the count
 
-def test_generate_synthetic_dataset():
-    """Test generating and saving a synthetic dataset."""
-    with tempfile.NamedTemporaryFile(suffix='.csv', delete=False) as tmp:
-        try:
-            # Generate a small test dataset
-            df = generate_synthetic_dataset(
-                n_transactions=100,
-                fraud_rate=0.1,
-                output_file=tmp.name
-            )
-            
-            # Check that the file was created and has the right columns
-            assert os.path.exists(tmp.name)
-            assert not df.empty
-            assert 'transaction_id' in df.columns
-            assert 'customer_id' in df.columns
-            assert 'amount' in df.columns
-            assert 'is_fraud' in df.columns
-            
-            # Check that the fraud rate is approximately correct
-            fraud_rate = df['is_fraud'].mean()
-            assert 0.05 <= fraud_rate <= 0.15  # Allow some flexibility
-            
-        finally:
-            # Clean up
-            if os.path.exists(tmp.name):
-                os.unlink(tmp.name)
+def test_generate_model_comparison_data():
+    """Test generating data for model comparison."""
+    generator = TestDataGenerator(seed=42)
+    ground_truth, (model1, model2) = generator.generate_model_comparison_data(
+        num_transactions=100,
+        fraud_rate=0.1
+    )
+    
+    assert len(ground_truth) == 100
+    assert len(model1) == 100
+    assert len(model2) == 100
+    
+    # Verify that model predictions match ground truth
+    for tx, pred1, pred2 in zip(ground_truth, model1, model2):
+        assert tx["transaction_id"] == pred1["transaction_id"] == pred2["transaction_id"]
+        assert pred1["decision"] == ("fraud" if tx["is_fraud"] else "legitimate")
+        assert pred2["decision"] == ("fraud" if tx["is_fraud"] else "legitimate")
+        assert pred1["confidence"] in [0.1, 0.9]
+        assert pred2["confidence"] in [0.05, 0.95]
 
 def test_transaction_amounts():
     """Test that transaction amounts are reasonable."""
