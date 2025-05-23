@@ -3,7 +3,7 @@ Fraud Detection Evaluation Module - Generates performance metrics for fraud dete
 """
 
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List
 
@@ -73,13 +73,13 @@ class FraudEvaluator:
             },
             "metadata": {
                 "total_samples": total,
-                "timestamp": datetime.utcnow().isoformat(),
+                "timestamp": datetime.now(timezone.utc).isoformat(),
                 "evaluation_type": "fraud_detection",
             },
         }
 
         # Save report
-        timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
+        timestamp = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
         report_path = self.output_dir / f"eval_report_{timestamp}.json"
 
         with open(report_path, "w") as f:
